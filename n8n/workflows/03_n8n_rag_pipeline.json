@@ -1,0 +1,155 @@
+{
+  "name": "03 - Enterprise RAG Knowledge Base in n8n",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ask-rag",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "33333333-0003-4000-8000-000000000001",
+      "name": "User Question Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Knowledge Base Retrieval Simulator (Simulates Vector Store Retrieval in n8n)\nconst query = ($input.first().json.body?.query || 'What is the launch date for Project NovaStar?').toLowerCase();\n\n// Enterprise Knowledge Base (mirroring takeaway/sample_docs.json)\nconst knowledgeBase = [\n  {\n    id: 'doc-1',\n    title: 'Project NovaStar Technical Specifications & Launch Plan',\n    content: 'Project NovaStar is QuantumNovas flagship orbital communications satellite system. Launch date: November 24, 2026 aboard the Falcon Heavy. Frequency band: Ka-band (26.5-40 GHz). Orbit: Geostationary at 35,786 km. Total budget: $420 million USD. Lead contractor: Orbital Dynamics Corp.'\n  },\n  {\n    id: 'doc-2',\n    title: 'QuantumNova Internal Office Policies & Perks',\n    content: 'Headquarters located in Seattle, WA. The high-speed internal office Wi-Fi network SSID is QuantumNova-Corp-5G and password is StellarNebula2026! All full-time employees receive a $1,500 annual wellness stipend. Core working hours are 10:00 AM to 4:00 PM Pacific Time.'\n  },\n  {\n    id: 'doc-3',\n    title: 'Customer Refund and Return Policy (Revised 2026)',\n    content: 'Standard software licenses are eligible for 100% full refund within 45 days of purchase. Hardware returns incur a 15% restocking fee. Subscriptions cancelled mid-cycle will receive prorated store credit calculated to the exact day.'\n  },\n  {\n    id: 'doc-4',\n    title: 'Executive Leadership Directory & Biographies',\n    content: 'CEO: Dr. Arthur Pendelton (MIT graduate, severe peanut allergy, favorite dessert: cannoli). CTO: Elena Rostova (former lead architect at CERN). CFO: Marcus Vance (ex-Goldman Sachs partner). General Counsel: Sarah Jenkins.'\n  }\n];\n\n// Keyword / Semantic similarity matching\nconst tokens = query.replace(/[^a-z0-9]/g, ' ').split(/\\s+/).filter(w => w.length > 2);\n\nconst scoredDocs = knowledgeBase.map(doc => {\n  const docText = (doc.title + ' ' + doc.content).toLowerCase();\n  let score = 0;\n  tokens.forEach(t => {\n    if (docText.includes(t)) score += 1;\n  });\n  return { ...doc, score };\n});\n\nscoredDocs.sort((a, b) => b.score - a.score);\nconst topDocs = scoredDocs.filter(d => d.score > 0).slice(0, 2);\n\nreturn [{\n  json: {\n    query: $input.first().json.body?.query || 'What is the launch date for Project NovaStar?',\n    retrievedCount: topDocs.length,\n    retrievedDocs: topDocs.length > 0 ? topDocs : [knowledgeBase[0]]\n  }\n}];"
+      },
+      "id": "33333333-0003-4000-8000-000000000002",
+      "name": "Vector Store & Retrieval",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst docs = item.retrievedDocs;\n\nlet contextStr = docs.map((d, idx) => `[Document ${idx + 1}]: ${d.title}\\nExcerpt: ${d.content}`).join('\\n\\n');\n\nconst prompt = `You are QuantumNova's enterprise knowledge assistant.\\n` +\n  `CRITICAL INSTRUCTIONS:\\n` +\n  `1. Answer the user question EXCLUSIVELY based on the verified context below.\\n` +\n  `2. Always cite the document title or number used.\\n` +\n  `3. If the context does not contain the answer, say 'I do not have this information in my verified knowledge base.'\\n\\n` +\n  `--- RETRIEVED CONTEXT ---\\n${contextStr}\\n--- END CONTEXT ---\\n\\n` +\n  `User Question: ${item.query}\\n\\nAnswer:`;\n\nreturn [{\n  json: {\n    query: item.query,\n    retrievedDocs: docs,\n    augmentedPrompt: prompt\n  }\n}];"
+      },
+      "id": "33333333-0003-4000-8000-000000000003",
+      "name": "Prompt Augmentation",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-goog-api-key",
+              "value": "={{ $env.GEMINI_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"{{ $json.augmentedPrompt.replace(/\"/g, '\\\\\"').replace(/\\n/g, '\\\\n') }}\"\n        }\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "33333333-0003-4000-8000-000000000004",
+      "name": "HTTP Request - Gemini RAG Generation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const geminiResp = $input.first().json;\nconst ragData = $('Prompt Augmentation').first().json;\n\nlet answer = 'No response generated';\nif (geminiResp.candidates && geminiResp.candidates.length > 0) {\n  answer = geminiResp.candidates[0].content?.parts[0]?.text || '';\n}\n\nreturn [{\n  json: {\n    success: true,\n    query: ragData.query,\n    answer: answer.trim(),\n    retrievedDocuments: ragData.retrievedDocs.map(d => ({ title: d.title, excerpt: d.content })),\n    pipeline: ['User Query', 'Vector Search Retrieval', 'Augmented Prompt Grounding', 'Gemini Flash Generation'],\n    model: 'gemini-flash-latest'\n  }\n}];"
+      },
+      "id": "33333333-0003-4000-8000-000000000005",
+      "name": "Synthesize RAG Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1100, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "33333333-0003-4000-8000-000000000006",
+      "name": "Return Answer to User",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1320, 300]
+    }
+  ],
+  "connections": {
+    "User Question Webhook": {
+      "main": [
+        [
+          {
+            "node": "Vector Store & Retrieval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store & Retrieval": {
+      "main": [
+        [
+          {
+            "node": "Prompt Augmentation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt Augmentation": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Gemini RAG Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Gemini RAG Generation": {
+      "main": [
+        [
+          {
+            "node": "Synthesize RAG Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Synthesize RAG Response": {
+      "main": [
+        [
+          {
+            "node": "Return Answer to User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "33333333-0003-4000-8000-000000000000",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "takeaway-gemini-instance"
+  }
+}

@@ -1,0 +1,117 @@
+/* n8n Canvas Grid Background */
+.canvas-grid-bg {
+  background-size: 24px 24px;
+  background-image: radial-gradient(circle, #334155 1px, transparent 1px);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #090d16;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Node Styling */
+.n8n-node {
+  background: #131b2e;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  width: 220px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  cursor: pointer;
+}
+
+.n8n-node:hover {
+  border-color: #f97316;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px -5px rgba(249, 115, 22, 0.2);
+}
+
+.n8n-node.selected {
+  border-color: #f97316;
+  outline: 2px solid rgba(249, 115, 22, 0.4);
+  background: #17223b;
+}
+
+.n8n-node.running {
+  border-color: #38bdf8;
+  animation: pulse-node 1s infinite alternate;
+}
+
+.n8n-node.success {
+  border-color: #10b981;
+}
+
+@keyframes pulse-node {
+  0% {
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
+  }
+}
+
+/* Connector Cables between nodes */
+.connector-line {
+  position: relative;
+  width: 44px;
+  height: 2px;
+  background: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.connector-line::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid #475569;
+}
+
+.connector-line.active {
+  background: linear-gradient(90deg, #f97316, #10b981);
+}
+
+.connector-line.active::after {
+  border-left-color: #10b981;
+}
+
+/* Node Handle dots */
+.node-handle {
+  width: 10px;
+  height: 10px;
+  background: #334155;
+  border: 2px solid #0f172a;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.node-handle-left {
+  left: -5px;
+}
+
+.node-handle-right {
+  right: -5px;
+}
+
+.n8n-node.success .node-handle {
+  background: #10b981;
+}

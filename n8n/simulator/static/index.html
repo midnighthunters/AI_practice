@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>n8n + Gemini AI Simulator & Visual Explainer</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-orange-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40 px-6 py-3.5 flex items-center justify-between shadow-lg">
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-600 via-red-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/20 text-white font-black text-xl tracking-tighter">
+          n8n
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-bold text-lg text-white tracking-tight">n8n Workflow & Gemini AI Canvas</h1>
+            <span class="text-xs bg-orange-500/10 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded-full font-mono font-medium">Interactive Simulator</span>
+          </div>
+          <p class="text-xs text-slate-400">Visualizing node pipelines, data contracts, and live Google Gemini API orchestration</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active API & Key Indicators -->
+    <div class="flex items-center space-x-3">
+      <div class="hidden sm:flex items-center space-x-2 bg-slate-800/80 border border-slate-700/60 rounded-lg px-3 py-1.5 text-xs text-slate-300">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-medium">Model:</span>
+        <span class="font-mono text-emerald-400">gemini-flash-latest</span>
+      </div>
+      <div class="hidden md:flex items-center space-x-2 bg-slate-800/80 border border-slate-700/60 rounded-lg px-3 py-1.5 text-xs text-slate-300">
+        <i class="fa-solid fa-key text-amber-400 text-xs"></i>
+        <span class="font-medium">API Key:</span>
+        <span class="font-mono text-amber-300/90">AQ.Ab8R...1Fo8Q</span>
+      </div>
+      <button id="btnDownloadJson" class="flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all shadow-sm">
+        <i class="fa-solid fa-download text-orange-400"></i>
+        <span>Download n8n JSON</span>
+      </button>
+      <a href="/takeaway-rag" target="_blank" onclick="window.open('http://127.0.0.1:5000', '_blank'); return false;" class="text-xs text-slate-400 hover:text-white flex items-center space-x-1.5 ml-2 transition-colors">
+        <span>RAG Explainer</span>
+        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+
+    <!-- Left / Center Canvas Area -->
+    <section class="flex-1 flex flex-col border-r border-slate-800 bg-[#0e131f] relative overflow-hidden">
+
+      <!-- Workflow Control Toolbar -->
+      <div class="p-4 bg-slate-900/60 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4 z-10">
+        <!-- Workflow Selection -->
+        <div class="flex items-center space-x-3">
+          <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
+            <i class="fa-solid fa-diagram-project text-orange-400"></i>
+            <span>Active Workflow:</span>
+          </label>
+          <select id="workflowSelect" class="bg-slate-800 text-slate-100 text-sm font-medium border border-slate-700 rounded-lg px-3 py-1.5 focus:outline-none focus:border-orange-500 transition-colors cursor-pointer shadow-inner">
+            <option value="01_gemini_http_request">01: Direct Gemini cURL / HTTP Request</option>
+            <option value="02_smart_customer_triage">02: Customer Support Triage & Sentiment</option>
+            <option value="03_n8n_rag_pipeline">03: Enterprise RAG Knowledge Base in n8n</option>
+            <option value="04_gemini_ai_agent_tools">04: Gemini AI Agent with Tools & Memory</option>
+          </select>
+        </div>
+
+        <!-- Preset Chips -->
+        <div class="flex items-center space-x-2 overflow-x-auto py-1 max-w-full">
+          <span class="text-xs text-slate-500 font-medium">Quick Presets:</span>
+          <div id="presetChipsContainer" class="flex items-center space-x-1.5">
+            <!-- Dynamic presets injected by app.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- User Query Input Bar -->
+      <div class="px-6 py-3 bg-slate-900/40 border-b border-slate-800/80 flex items-center space-x-3 z-10">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-terminal text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 text-xs"></i>
+          <input type="text" id="workflowInput" class="w-full bg-slate-950/80 border border-slate-800 rounded-lg pl-9 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-mono" placeholder="Type prompt or message...">
+        </div>
+        <button id="btnExecute" class="flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 active:scale-95 text-white text-sm font-bold px-5 py-2 rounded-lg shadow-lg shadow-orange-500/25 transition-all cursor-pointer">
+          <i class="fa-solid fa-play text-xs"></i>
+          <span>Execute Workflow</span>
+        </button>
+      </div>
+
+      <!-- Canvas Area (Node Graph) -->
+      <div class="flex-1 relative overflow-auto p-8 flex flex-col justify-center items-center select-none" id="canvasContainer">
+        <!-- Background Grid -->
+        <div class="canvas-grid-bg absolute inset-0 pointer-events-none opacity-40"></div>
+
+        <!-- Node Pipeline Render Area -->
+        <div id="nodePipeline" class="relative z-10 flex flex-wrap items-center justify-center gap-6 max-w-6xl py-6">
+          <!-- Populated dynamically by app.js -->
+        </div>
+
+        <!-- Canvas Tip -->
+        <div class="absolute bottom-4 left-6 text-xs text-slate-500 flex items-center space-x-2">
+          <i class="fa-solid fa-circle-info text-orange-400/80"></i>
+          <span>Click on any node to inspect its live <b>Input Data</b>, <b>Parameters</b>, and <b>Output Data</b></span>
+        </div>
+      </div>
+
+      <!-- Bottom Panel: Execution Log & Final Output -->
+      <div class="border-t border-slate-800 bg-slate-900/90 backdrop-blur max-h-64 flex flex-col transition-all z-20">
+        <div class="px-5 py-2.5 bg-slate-800/60 border-b border-slate-700/50 flex items-center justify-between">
+          <div class="flex items-center space-x-3 text-xs">
+            <span class="font-bold text-slate-300 flex items-center space-x-1.5">
+              <i class="fa-solid fa-check-double text-emerald-400"></i>
+              <span>Execution Summary</span>
+            </span>
+            <span id="execLatencyBadge" class="bg-slate-800 text-slate-400 border border-slate-700 px-2 py-0.5 rounded font-mono">0ms</span>
+            <span id="execStatusBadge" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded font-mono font-medium">Ready</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button id="tabBtnResult" class="text-xs px-2.5 py-1 rounded bg-orange-500/20 text-orange-400 font-medium border border-orange-500/40">Final Result</button>
+            <button id="tabBtnCurl" class="text-xs px-2.5 py-1 rounded text-slate-400 hover:text-slate-200 font-medium">cURL Equivalent</button>
+          </div>
+        </div>
+
+        <div class="p-4 overflow-y-auto flex-1 font-mono text-xs">
+          <!-- Final Result Tab -->
+          <div id="panelResult" class="text-slate-300">
+            <div class="text-slate-500 italic">No execution run yet. Click "Execute Workflow" above to run this pipeline with Google Gemini!</div>
+          </div>
+          <!-- Curl Tab -->
+          <div id="panelCurl" class="hidden">
+            <pre class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-amber-300 overflow-x-auto select-all leading-relaxed" id="curlSnippet"></pre>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Right Sidebar: Node Inspector (Mimicking n8n node drawer) -->
+    <aside id="nodeDrawer" class="w-full lg:w-[460px] bg-slate-900 border-t lg:border-t-0 lg:border-l border-slate-800 flex flex-col h-auto lg:h-full z-30 shadow-2xl">
+      <!-- Drawer Header -->
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
+        <div class="flex items-center space-x-3">
+          <div id="drawerNodeIcon" class="w-8 h-8 rounded-lg bg-orange-500/20 border border-orange-500/40 text-orange-400 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-cube"></i>
+          </div>
+          <div>
+            <h2 id="drawerNodeName" class="font-bold text-sm text-white tracking-tight">Select a Node</h2>
+            <p id="drawerNodeType" class="text-[11px] font-mono text-slate-400">n8n-nodes-base</p>
+          </div>
+        </div>
+        <span id="drawerNodeTime" class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">0ms</span>
+      </div>
+
+      <!-- Drawer Tabs -->
+      <div class="flex border-b border-slate-800 bg-slate-950/40 text-xs font-medium">
+        <button id="tabInput" class="flex-1 py-2.5 text-center text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-colors">
+          Input <span class="text-[10px] text-slate-500 font-mono" id="badgeInputCount">[0]</span>
+        </button>
+        <button id="tabParams" class="flex-1 py-2.5 text-center text-orange-400 border-b-2 border-orange-500 transition-colors">
+          Parameters
+        </button>
+        <button id="tabOutput" class="flex-1 py-2.5 text-center text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-colors">
+          Output <span class="text-[10px] text-slate-500 font-mono" id="badgeOutputCount">[0]</span>
+        </button>
+      </div>
+
+      <!-- Drawer Content Area -->
+      <div class="flex-1 overflow-y-auto p-4 font-mono text-xs text-slate-300">
+        <!-- Content: Input Tab -->
+        <div id="contentInput" class="hidden">
+          <div class="text-slate-500 mb-2 font-sans text-xs">Array of items entering this node:</div>
+          <pre id="jsonInput" class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-emerald-400 overflow-x-auto whitespace-pre-wrap"></pre>
+        </div>
+
+        <!-- Content: Parameters Tab -->
+        <div id="contentParams">
+          <div class="text-slate-500 mb-2 font-sans text-xs">Node configuration & expression bindings:</div>
+          <div id="paramsContainer" class="space-y-3 font-sans">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Content: Output Tab -->
+        <div id="contentOutput" class="hidden">
+          <div class="text-slate-500 mb-2 font-sans text-xs">Array of items produced by this node:</div>
+          <pre id="jsonOutput" class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-sky-400 overflow-x-auto whitespace-pre-wrap"></pre>
+        </div>
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="p-3 bg-slate-950 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between font-sans">
+        <span class="flex items-center space-x-1.5">
+          <i class="fa-solid fa-code-commit text-orange-400"></i>
+          <span>Item paradigm: <code>[{ json: { ... } }]</code></span>
+        </span>
+        <button id="btnCopyJson" class="hover:text-white px-2 py-1 rounded bg-slate-800 border border-slate-700 transition-colors">
+          <i class="fa-regular fa-copy mr-1"></i>Copy Output
+        </button>
+      </div>
+    </aside>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+{
+  "name": "02 - Smart Customer Support Triage & Sentiment Analysis",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "support-ticket",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "22222222-0002-4000-8000-000000000001",
+      "name": "Incoming Support Ticket",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ticket-text",
+              "name": "ticketText",
+              "value": "={{ $json.body.message || 'I demand a full refund! My server went down during our Black Friday sale and we lost thousands of dollars. Nobody is answering your phones!' }}",
+              "type": "string"
+            },
+            {
+              "id": "customer-email",
+              "name": "customerEmail",
+              "value": "={{ $json.body.email || 'customer@example.com' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "22222222-0002-4000-8000-000000000002",
+      "name": "Extract Ticket Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-goog-api-key",
+              "value": "={{ $env.GEMINI_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Analyze the following customer support message. Output ONLY a valid JSON object without markdown formatting, code blocks, or extra text.\\n\\nMessage: \\\"{{ $json.ticketText }}\\\"\\n\\nJSON Schema:\\n{\\n  \\\"category\\\": \\\"BILLING | OUTAGE | TECHNICAL | GENERAL\\\",\\n  \\\"urgency\\\": \\\"CRITICAL | HIGH | MEDIUM | LOW\\\",\\n  \\\"sentiment\\\": \\\"ANGRY | FRUSTRATED | NEUTRAL | POSITIVE\\\",\\n  \\\"summary\\\": \\\"One short sentence summary\\\",\\n  \\\"recommended_action\\\": \\\"Suggested immediate operational action\\\"\\n}\"\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"temperature\": 0.1\n  }\n}",
+        "options": {}
+      },
+      "id": "22222222-0002-4000-8000-000000000003",
+      "name": "Gemini Classification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nlet rawText = '';\nif (response.candidates && response.candidates.length > 0) {\n  rawText = response.candidates[0].content?.parts[0]?.text || '{}';\n}\n\n// Strip markdown code fences if model enclosed in ```json\nrawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();\n\nlet parsed = {};\ntry {\n  parsed = JSON.parse(rawText);\n} catch(e) {\n  parsed = {\n    category: 'GENERAL',\n    urgency: 'HIGH',\n    sentiment: 'UNKNOWN',\n    summary: rawText,\n    recommended_action: 'Manual review required'\n  };\n}\n\nconst ticketInfo = $('Extract Ticket Data').first().json;\n\nreturn [{\n  json: {\n    ticketText: ticketInfo.ticketText,\n    customerEmail: ticketInfo.customerEmail,\n    analysis: parsed,\n    isUrgent: parsed.urgency === 'CRITICAL' || parsed.urgency === 'HIGH'\n  }\n}];"
+      },
+      "id": "22222222-0002-4000-8000-000000000004",
+      "name": "Parse Structured JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.isUrgent }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Urgent Escalation"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "Standard Queue"
+        }
+      },
+      "id": "22222222-0002-4000-8000-000000000005",
+      "name": "Check Priority",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [1080, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "escalation-status",
+              "name": "status",
+              "value": "ESCALATED_TO_ONCALL_LEAD",
+              "type": "string"
+            },
+            {
+              "id": "notification-channel",
+              "name": "channel",
+              "value": "slack-#critical-alerts",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "22222222-0002-4000-8000-000000000006",
+      "name": "Escalate to Slack Alert",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1320, 200]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "queue-status",
+              "name": "status",
+              "value": "QUEUED_STANDARD_SUPPORT",
+              "type": "string"
+            },
+            {
+              "id": "notification-channel",
+              "name": "channel",
+              "value": "zendesk-general-inbox",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "22222222-0002-4000-8000-000000000007",
+      "name": "Route to Zendesk Queue",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1320, 420]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "22222222-0002-4000-8000-000000000008",
+      "name": "Webhook Final Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1540, 300]
+    }
+  ],
+  "connections": {
+    "Incoming Support Ticket": {
+      "main": [
+        [
+          {
+            "node": "Extract Ticket Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Ticket Data": {
+      "main": [
+        [
+          {
+            "node": "Gemini Classification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Classification": {
+      "main": [
+        [
+          {
+            "node": "Parse Structured JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Structured JSON": {
+      "main": [
+        [
+          {
+            "node": "Check Priority",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Priority": {
+      "main": [
+        [
+          {
+            "node": "Escalate to Slack Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route to Zendesk Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escalate to Slack Alert": {
+      "main": [
+        [
+          {
+            "node": "Webhook Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route to Zendesk Queue": {
+      "main": [
+        [
+          {
+            "node": "Webhook Final Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "22222222-0002-4000-8000-000000000000",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "takeaway-gemini-instance"
+  }
+}
