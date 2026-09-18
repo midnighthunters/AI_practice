@@ -1,9 +1,18 @@
-# 🚀 AI Engineering Practice & Mastery Suite
+# 🚀 AI Engineering Practice & Flagship Enterprise Suite
 
-Welcome to the AI Engineering learning workspace. This repository contains seven comprehensive, interactive, production-ready modules powered by modern AI engineering standards and the **Google Gemini API**:
+Welcome to the AI Engineering learning & production workspace. This repository features **AegisOps**—an enterprise-grade autonomous multi-agent incident commander platform—alongside seven in-depth learning & mastery modules powered by modern AI engineering standards:
 
 ```
 takeaway/
+├── AegisOps/               # 🛡️ FLAGSHIP: Autonomous Multi-Agent SRE & Incident Commander (Port 5006)
+│   ├── app.py              # Mission Control Dashboard & Live HTML5 Canvas Topology
+│   ├── orchestrator.py     # 5-Agent Swarm Orchestrator (Triage, RCA, Sec, Remediation, PostMortem)
+│   ├── graph_topology.py   # GraphRAG Microservice Topology & Blast Radius Engine
+│   ├── mcp_sre_server.py   # Model Context Protocol (MCP) SRE Tooling & Telemetry
+│   ├── guardrails_engine.py# Threat Defense Firewall, PII Masking & Semantic Cache
+│   ├── test_aegisops.py    # Automated Chaos & Reliability Test Suite
+│   └── README.md           # Architecture Deep Dive & Resume Talking Points
+│
 ├── RAG/                    # 🧠 Interactive RAG Explainer & Grounding Architecture (Port 5000)
 │   ├── app.py              # Flask Web App
 │   ├── rag_engine.py       # Core TF-IDF, HyDE & Grounding Audit Engine
@@ -23,33 +32,42 @@ takeaway/
 │   ├── app.py              # Interactive MCP Web Inspector & Agent Studio
 │   ├── 01-05 tutorials     # Framing, Resources, Tools, Prompts, Client Agent
 │   ├── mcp_core.py         # Unified In-Memory MCP Server (JSON-RPC 2.0)
-│   ├── test_mcp.py         # Protocol Unit Test Suite
 │   └── README.md           # MCP Architecture & Specification Guide
 │
 ├── Evals_and_Guardrails/   # 🛡️ Production Evals, Safety & Semantic Cache (Port 5004)
 │   ├── app.py              # Interactive Eval & Guardrail Playground
 │   ├── 01-05 tutorials     # LLM Judge, RAG Triad, In/Out Guardrails, Cache
 │   ├── evals_core.py       # Quality Rubrics, TruLens Triad, Firewall & Cache
-│   ├── test_evals.py       # Evals & Guardrails Test Suite
 │   └── README.md           # Production AI Reliability & Safety Guide
 │
 ├── GraphRAG/               # 🕸️ Knowledge Graphs & Multi-Hop Reasoning (Port 5005)
 │   ├── app.py              # Canvas Visual Graph Explorer & Hybrid Query Engine
 │   ├── 01-04 tutorials     # NER & Triplet Extraction, Graph Builder, Traversal
 │   ├── graph_core.py       # Directed Knowledge Graph & BFS Multi-Hop Traversal
-│   ├── test_graphrag.py    # GraphRAG Retrieval Test Suite
 │   └── README.md           # GraphRAG vs Vector RAG Architecture Guide
 │
 └── n8n/                    # ⚡ Production AI Workflow Automation (Port 5678)
     ├── docker-compose.yml  # Real n8n Self-Hosting Setup
     ├── simulator/          # Standalone Python-based n8n Web Simulator
-    ├── workflows/          # Production n8n JSON Workflows (cURL, RAG, Triage, Agent)
     └── README.md           # n8n Comprehensive Engineering Guide
 ```
 
 ---
 
 ## 🧭 How to Explore Each Module
+
+### 0. 🛡️ AegisOps Flagship Mission Control (`AegisOps/` - Port 5006)
+**Autonomous Multi-Agent SRE & Incident Commander Platform:**
+- **5 Autonomous Agents**: Triage, Forensic RCA, Security Auditor, Remediation Engineer, and Post-Mortem Scribe.
+- **GraphRAG Topology**: Microservice dependency graph with real-time 3-hop cascading blast radius analysis.
+- **Model Context Protocol (MCP)**: Live telemetry streaming and automated container/database remediation tools.
+- **Human-in-the-Loop Gateway**: Safe interactive authorization terminal before running production repairs.
+
+```bash
+cd AegisOps
+python app.py
+# Opens at: http://127.0.0.1:5006
+```
 
 ### 1. 🧠 The RAG Explainer (`RAG/` - Port 5000)
 Understand the low-level mechanics of Retrieval-Augmented Generation:
