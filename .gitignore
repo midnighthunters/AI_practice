@@ -4,6 +4,7 @@ __pycache__/
 Lanchain
 .env
 .env.*
+!.env.example
 venv/
 .venv/
 env/
