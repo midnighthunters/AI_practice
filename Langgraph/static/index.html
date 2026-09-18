@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LangGraph Masterclass - Interactive Visualizer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+
+  <!-- TOP HEADER -->
+  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <i class="fa-solid fa-project-diagram text-white text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-indigo-300">
+            LangGraph Interactive Studio
+          </h1>
+          <p class="text-xs text-slate-400">Stateful, Cyclical & Multi-Agent AI Workflows</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Gemini Flash Connected
+        </span>
+        <a href="http://127.0.0.1:5000" target="_blank" class="px-3 py-1 text-xs text-slate-300 hover:text-white border border-slate-700 hover:border-slate-500 rounded-lg transition">
+          <i class="fa-solid fa-book-open mr-1"></i> RAG Explainer
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- WORKFLOW SELECTOR TABS -->
+    <div class="bg-slate-900/50 border border-slate-800 p-2 rounded-2xl">
+      <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-3 pt-1 pb-2">
+        <i class="fa-solid fa-graduation-cap mr-1 text-indigo-400"></i> Select LangGraph Concept & Example:
+      </div>
+      <div id="workflowTabs" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-1.5">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+
+    <!-- ACTIVE WORKFLOW HERO BANNER -->
+    <div class="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span id="activeBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+              Module #1
+            </span>
+            <h2 id="activeTitle" class="text-xl font-bold text-white">Basic StateGraph (Hello World)</h2>
+          </div>
+          <p id="activeDesc" class="text-sm text-slate-300 max-w-3xl leading-relaxed">
+            Loading workflow description...
+          </p>
+        </div>
+        <div class="flex-shrink-0">
+          <button id="runWorkflowBtn" class="w-full md:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 active:scale-95 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-play"></i>
+            <span>Run Workflow Live</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORKSPACE 2-COLUMN LAYOUT -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- LEFT COLUMN: GRAPH TOPOLOGY & INPUT (7 COLS) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- INTERACTIVE GRAPH TOPOLOGY VISUALIZER -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-diagram-project text-indigo-400"></i>
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider">Visual Graph Topology (DAG / Cycle)</h3>
+            </div>
+            <span class="text-xs text-slate-400" id="topologyType">StateGraph Architecture</span>
+          </div>
+
+          <!-- Dynamic Graph Canvas -->
+          <div id="graphCanvas" class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-6 min-h-[220px] flex flex-col justify-center items-center relative overflow-hidden">
+            <!-- Nodes & Edges rendered here -->
+          </div>
+        </div>
+
+        <!-- INPUT CONFIGURATION -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-sliders text-indigo-400"></i>
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider">Input Parameters</h3>
+            </div>
+            <button id="resetInputBtn" class="text-xs text-slate-400 hover:text-indigo-400 transition">
+              <i class="fa-solid fa-rotate-left mr-1"></i> Reset to Default
+            </button>
+          </div>
+
+          <div id="inputFormContainer" class="space-y-3">
+            <!-- Input fields generated dynamically based on active workflow -->
+          </div>
+        </div>
+
+        <!-- HITL APPROVAL MODAL / BANNER (Hidden until HITL workflow triggers breakpoint) -->
+        <div id="hitlBanner" class="hidden bg-amber-950/40 border-2 border-amber-500/50 rounded-2xl p-5 shadow-2xl animate-pulse">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-pause text-amber-400 text-lg"></i>
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-500 text-black uppercase tracking-wider">
+                  Human-in-the-Loop Interruption
+                </span>
+                <span class="text-xs text-amber-300">Execution paused before sensitive operation</span>
+              </div>
+              <div id="hitlDetails" class="mt-2 text-sm text-slate-200 bg-slate-950/70 p-3 rounded-lg border border-amber-500/20 font-mono text-xs">
+                Pending wire transfer details...
+              </div>
+              <div class="mt-4 flex items-center gap-3">
+                <button id="hitlApproveBtn" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-check"></i> Approve & Execute Transfer
+                </button>
+                <button id="hitlRejectBtn" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-ban"></i> Reject & Abort
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: STEP-BY-STEP EXECUTION & STATE INSPECTOR (5 COLS) -->
+      <div class="lg:col-span-5 space-y-6">
+
+        <!-- STEP EXECUTION PROGRESSION -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-indigo-400"></i>
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider">Execution Pipeline</h3>
+            </div>
+            <span id="stepCounter" class="text-xs font-mono text-slate-400">0 steps executed</span>
+          </div>
+
+          <div id="stepsTimeline" class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
+            <div class="text-xs text-slate-500 italic p-3 text-center">
+              Click "Run Workflow Live" to trigger execution.
+            </div>
+          </div>
+        </div>
+
+        <!-- STATE INSPECTOR & OUTPUT VIEWER -->
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-database text-indigo-400"></i>
+              <h3 class="text-sm font-bold text-white uppercase tracking-wider">State & Output Inspector</h3>
+            </div>
+            <div class="flex gap-1">
+              <button id="tabFormattedBtn" class="px-2.5 py-1 text-xs font-medium rounded-lg bg-indigo-600 text-white transition">Formatted</button>
+              <button id="tabRawBtn" class="px-2.5 py-1 text-xs font-medium rounded-lg text-slate-400 hover:text-white transition">JSON State</button>
+            </div>
+          </div>
+
+          <!-- Formatted View -->
+          <div id="inspectorFormatted" class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+            <div class="text-xs text-slate-500 italic p-4 text-center">
+              Awaiting workflow completion...
+            </div>
+          </div>
+
+          <!-- Raw JSON View -->
+          <div id="inspectorRaw" class="hidden">
+            <pre id="jsonStatePre" class="bg-slate-950 p-4 rounded-xl text-xs font-mono text-indigo-300 max-h-[380px] overflow-auto border border-slate-800/80">{}</pre>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800/60 py-4 bg-slate-950/80 text-center text-xs text-slate-500">
+    LangGraph Interactive Tutorial Suite • Powered by Google Gemini & LangGraph 1.2.11
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
