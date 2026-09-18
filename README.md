@@ -1,37 +1,49 @@
 # 🚀 AI Engineering Practice & Mastery Suite
 
-Welcome to the AI Engineering learning workspace. This repository contains four comprehensive, interactive, production-ready modules powered by the **Google Gemini API**:
+Welcome to the AI Engineering learning workspace. This repository contains seven comprehensive, interactive, production-ready modules powered by modern AI engineering standards and the **Google Gemini API**:
 
 ```
 takeaway/
-├── RAG/                    # 🧠 Interactive RAG Explainer & Grounding Architecture
-│   ├── app.py              # Flask Web App (Port 5000)
+├── RAG/                    # 🧠 Interactive RAG Explainer & Grounding Architecture (Port 5000)
+│   ├── app.py              # Flask Web App
 │   ├── rag_engine.py       # Core TF-IDF, HyDE & Grounding Audit Engine
-│   ├── sample_docs.json    # Private Knowledge Base
-│   ├── static/             # Visual RAG Interface
 │   └── README.md           # RAG Architecture Deep Dive
 │
-├── LangChain/              # 🦜🔗 LangChain Interactive Mastery Suite
-│   ├── app.py              # Flask Web App (Port 5001)
-│   ├── config.py           # Gemini API & LCEL Model Factories
-│   ├── examples/           # Standalone Runnable Python Tutorials
-│   ├── static/             # Interactive Mastery Dashboard
-│   ├── test_langchain.py   # Test Suite
+├── LangChain/              # 🦜🔗 LangChain Interactive Mastery Suite (Port 5001)
+│   ├── app.py              # Flask Web App
+│   ├── examples/           # 8 Standalone Runnable Python Tutorials
 │   └── README.md           # LangChain Concepts & LCEL Guide
 │
-├── Langgraph/              # 🕸️ LangGraph Multi-Agent Studio & Stateful Graphs
-│   ├── app.py              # Visual Graph Studio (Port 5002)
-│   ├── gemini_client.py    # Structured Gemini Client
+├── Langgraph/              # 🕸️ LangGraph Multi-Agent Studio & Stateful Graphs (Port 5002)
+│   ├── app.py              # Visual Graph Studio
 │   ├── 01-09 examples      # State reducers, loops, HITL & supervisor patterns
-│   ├── static/             # Graph Visualizer Web Interface
-│   ├── test_langgraph.py   # LangGraph Test Suite
 │   └── README.md           # LangGraph StateGraph Deep Dive
 │
-└── n8n/                    # ⚡ Production AI Workflow Automation
+├── MCP/                    # 🔌 Model Context Protocol (MCP) Suite (Port 5003)
+│   ├── app.py              # Interactive MCP Web Inspector & Agent Studio
+│   ├── 01-05 tutorials     # Framing, Resources, Tools, Prompts, Client Agent
+│   ├── mcp_core.py         # Unified In-Memory MCP Server (JSON-RPC 2.0)
+│   ├── test_mcp.py         # Protocol Unit Test Suite
+│   └── README.md           # MCP Architecture & Specification Guide
+│
+├── Evals_and_Guardrails/   # 🛡️ Production Evals, Safety & Semantic Cache (Port 5004)
+│   ├── app.py              # Interactive Eval & Guardrail Playground
+│   ├── 01-05 tutorials     # LLM Judge, RAG Triad, In/Out Guardrails, Cache
+│   ├── evals_core.py       # Quality Rubrics, TruLens Triad, Firewall & Cache
+│   ├── test_evals.py       # Evals & Guardrails Test Suite
+│   └── README.md           # Production AI Reliability & Safety Guide
+│
+├── GraphRAG/               # 🕸️ Knowledge Graphs & Multi-Hop Reasoning (Port 5005)
+│   ├── app.py              # Canvas Visual Graph Explorer & Hybrid Query Engine
+│   ├── 01-04 tutorials     # NER & Triplet Extraction, Graph Builder, Traversal
+│   ├── graph_core.py       # Directed Knowledge Graph & BFS Multi-Hop Traversal
+│   ├── test_graphrag.py    # GraphRAG Retrieval Test Suite
+│   └── README.md           # GraphRAG vs Vector RAG Architecture Guide
+│
+└── n8n/                    # ⚡ Production AI Workflow Automation (Port 5678)
     ├── docker-compose.yml  # Real n8n Self-Hosting Setup
-    ├── simulator/          # Standalone Python-based n8n Web Simulator (Port 5678)
+    ├── simulator/          # Standalone Python-based n8n Web Simulator
     ├── workflows/          # Production n8n JSON Workflows (cURL, RAG, Triage, Agent)
-    ├── test_n8n_integration.py # Workflow Integration Test Suite
     └── README.md           # n8n Comprehensive Engineering Guide
 ```
 
@@ -39,7 +51,7 @@ takeaway/
 
 ## 🧭 How to Explore Each Module
 
-### 1. 🧠 The RAG Explainer (`RAG/`)
+### 1. 🧠 The RAG Explainer (`RAG/` - Port 5000)
 Understand the low-level mechanics of Retrieval-Augmented Generation:
 - How similarity search retrieves private chunks.
 - How prompts are augmented with grounding rules.
@@ -51,7 +63,7 @@ python app.py
 # Opens at: http://127.0.0.1:5000
 ```
 
-### 2. 🦜🔗 The LangChain Mastery Suite (`LangChain/`)
+### 2. 🦜🔗 The LangChain Mastery Suite (`LangChain/` - Port 5001)
 Understand how enterprise AI applications are engineered with LangChain and LCEL:
 - **Models & Prompts**: `ChatGoogleGenerativeAI`, `ChatPromptTemplate`, streaming.
 - **Output Parsers**: Extracting clean strings, JSON dictionaries, and typed Pydantic models.
@@ -68,7 +80,7 @@ python app.py
 # Opens at: http://127.0.0.1:5001
 ```
 
-### 3. 🕸️ The LangGraph Studio (`Langgraph/`)
+### 3. 🕸️ The LangGraph Studio (`Langgraph/` - Port 5002)
 Master stateful, cyclical multi-agent graphs:
 - **Cyclic Agent Loops**: ReAct loops with retry logic and error correction.
 - **State Reducers**: TypedDict state with custom operator reducers.
@@ -82,7 +94,47 @@ python app.py
 # Opens at: http://127.0.0.1:5002
 ```
 
-### 4. ⚡ n8n Workflow Automation (`n8n/`)
+### 4. 🔌 The Model Context Protocol Studio (`MCP/` - Port 5003)
+Master Anthropic's universal open standard for connecting AI assistants to tools & data:
+- **JSON-RPC 2.0 Framing**: Protocol initialization handshake and capabilities negotiation.
+- **Resources**: Passive read-only context streaming (`system://telemetry`, `docs://architecture`).
+- **Tools**: Action execution with standard JSON Schema input validation.
+- **Prompts**: Parameterized reusable prompt templates.
+- **Autonomous Client Agent**: Full loop connecting to MCP servers, discovering tools, and solving user queries.
+
+```bash
+cd MCP
+python app.py
+# Opens at: http://127.0.0.1:5003
+```
+
+### 5. 🛡️ Evaluations & Guardrails Studio (`Evals_and_Guardrails/` - Port 5004)
+Deploy reliable, safe, and performant AI systems in production:
+- **LLM-as-a-Judge**: Multi-criteria rubric scoring (Accuracy, Conciseness) with Chain-of-Thought explanations.
+- **The RAG Triad**: Measuring Faithfulness, Answer Relevance, and Context Precision.
+- **Production Guardrails**: Prompt injection detection, jailbreak classification, and PII masking.
+- **Semantic Caching**: Sub-millisecond vector similarity caching to reduce API costs to $0.00.
+
+```bash
+cd Evals_and_Guardrails
+python app.py
+# Opens at: http://127.0.0.1:5004
+```
+
+### 6. 🕸️ GraphRAG & Multi-Hop Reasoning (`GraphRAG/` - Port 5005)
+Bridge the gap where standard vector search fails at global synthesis:
+- **NER & Triplet Extraction**: Extracting `(Subject) ──[Predicate]──► (Object)` relations from raw text.
+- **Directed Knowledge Graph**: In-memory adjacency lists, node types, and degree centrality.
+- **Multi-Hop Traversal**: Shortest path finding and $N$-hop neighborhood expansion.
+- **Hybrid Retrieval**: Combining dense document chunks with relational graph triplets.
+
+```bash
+cd GraphRAG
+python app.py
+# Opens at: http://127.0.0.1:5005
+```
+
+### 7. ⚡ n8n Workflow Automation (`n8n/` - Port 5678)
 Build visual, low-code AI workflows and production pipelines:
 - **Visual AI Pipelines**: Connect webhooks, databases, and Gemini AI visually.
 - **Offline Simulator**: Test n8n workflows locally without Docker via the Python simulator.
