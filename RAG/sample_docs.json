@@ -1,0 +1,32 @@
+[
+  {
+    "id": "doc-1",
+    "title": "Project NovaStar Specs & Launch Plan",
+    "category": "Engineering",
+    "content": "Project NovaStar is QuantumNova's next-generation orbital sensor system scheduled for public launch on November 24, 2026. The project lead is Dr. Elena Vance. The sensor features hyper-efficient gallium nitride batteries that deliver 96 hours of continuous telemetry with a development budget of $4.8 million."
+  },
+  {
+    "id": "doc-2",
+    "title": "Office Policies & IT Credentials",
+    "category": "Operations",
+    "content": "QuantumNova headquarters offers a $1,500 annual wellness and fitness stipend to all full-time employees. The secure guest Wi-Fi SSID is NovaGuest_Secure and the WPA3 passcode is Orbit!9942. Office dog-friendly days are every Tuesday and Thursday."
+  },
+  {
+    "id": "doc-3",
+    "title": "Customer Refund & Satisfaction Policy",
+    "category": "Customer Support",
+    "content": "Under QuantumNova's 2026 Customer Assurance Plan, any enterprise or retail client may request a 100% full refund within 45 days of purchase with no questions asked. Additionally, if the claim is submitted within the first 14 days, the client receives an extra 10% promotional credit toward any future platform renewal."
+  },
+  {
+    "id": "doc-4",
+    "title": "Executive Profile: Arthur Pendelton (CEO)",
+    "category": "Executive",
+    "content": "Arthur Pendelton has served as QuantumNova's Chief Executive Officer since March 2021. Arthur holds a life-threatening, severe sesame allergy; catering coordinators must verify that all food served during board meetings is strictly sesame-free. His favorite dessert is Sicilian pistachio cannoli, and his open office hours are every Friday at 3:00 PM."
+  },
+  {
+    "id": "doc-5",
+    "title": "Project Chimera Database Architecture",
+    "category": "Engineering",
+    "content": "Project Chimera is the proprietary distributed storage engine supporting all internal analytics. It uses embedded RocksDB storage with a Raft consensus protocol across a 5-node cluster distributed between Zurich and Singapore, achieving 250,000 write operations per second with sub-millisecond p99 latency."
+  }
+]

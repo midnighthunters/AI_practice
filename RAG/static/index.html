@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG Explainer | Learn Retrieval-Augmented Generation with Gemini</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+
+  <!-- Header / Navbar -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <i class="fa-solid fa-brain text-white text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">
+            RAG Explainer: Deep Dive & Battle Arena
+          </h1>
+          <p class="text-xs text-slate-400">Powered by Google Gemini &bull; Naive RAG vs Advanced RAG (HyDE, Re-Ranking, Self-RAG)</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3 text-xs">
+        <a href="http://127.0.0.1:5050" target="_blank" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg font-semibold bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20 hover:from-orange-600 hover:to-amber-600 transition-all">
+          <i class="fa-solid fa-diagram-project"></i>
+          <span>Open n8n Workflows &amp; Canvas &rarr;</span>
+        </a>
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full font-medium bg-emerald-950 text-emerald-400 border border-emerald-800/60">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span> Gemini API Connected
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+    
+    <!-- Hero Concept Card -->
+    <section class="relative overflow-hidden rounded-2xl border border-indigo-900/50 bg-gradient-to-b from-indigo-950/40 to-slate-900/40 p-6 sm:p-8 backdrop-blur shadow-2xl">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-3">
+          <i class="fa-solid fa-graduation-cap"></i> Machine Learning Deep Dive
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-3">
+          How <span class="text-indigo-400">RAG</span> Actually Works Under the Hood
+        </h2>
+        <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+          Standard LLMs are generalists. They cannot read your internal wikis, proprietary specs, or private databases. 
+          RAG decouples <strong>knowledge storage</strong> from <strong>reasoning</strong>:
+        </p>
+      </div>
+
+      <!-- 3-Pillar Diagram Formula -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 relative group hover:border-indigo-500/50 transition">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm">R</span>
+            <div>
+              <h3 class="font-semibold text-white text-sm">1. Retrieval</h3>
+              <span class="text-[10px] text-indigo-400 font-mono">Bi-Encoder + Vector DB</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Maps documents into vector embeddings. Given a query, it computes cosine similarity to identify candidate chunks. <em>(Advancement: HyDE + Cross-Encoder Re-Ranking)</em>.
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 relative group hover:border-indigo-500/50 transition">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm">A</span>
+            <div>
+              <h3 class="font-semibold text-white text-sm">2. Augmentation</h3>
+              <span class="text-[10px] text-amber-400 font-mono">Context Window Engineering</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Constructs a prompt injecting the retrieved facts and grounding constraints: <em>"Answer using ONLY this context"</em>. <em>(Advancement: Lost-in-the-Middle U-Shaped Ordering)</em>.
+          </p>
+        </div>
+
+        <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 relative group hover:border-indigo-500/50 transition">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">G</span>
+            <div>
+              <h3 class="font-semibold text-white text-sm">3. Generation</h3>
+              <span class="text-[10px] text-emerald-400 font-mono">Gemini Synthesis + Citations</span>
+            </div>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Gemini reads the prompt and synthesizes a grounded answer citing the source chunks. <em>(Advancement: Self-RAG automated claim verification pass)</em>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Query Input & Controls Section -->
+    <section class="rounded-2xl border border-slate-800 bg-slate-900/70 p-6 backdrop-blur shadow-xl space-y-4">
+      
+      <!-- BREAK NAIVE RAG BANNER -->
+      <div class="bg-gradient-to-r from-amber-950/40 via-indigo-950/40 to-slate-900/40 border border-amber-500/30 rounded-xl p-4 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-amber-300 flex items-center gap-2">
+            <i class="fa-solid fa-fire text-amber-400 animate-bounce"></i> 
+            TRY QUERIES THAT BREAK NAIVE RAG (The "Aha!" Moment):
+          </span>
+          <span class="text-[11px] text-slate-400 font-mono">Vocabulary Gap & Synonyms</span>
+        </div>
+        <p class="text-xs text-slate-300">
+          In Naive RAG, if the user doesn't use the exact technical words written in the document, search returns <strong>0.0%</strong>. 
+          Click these queries to watch Naive RAG fail and Advanced RAG succeed:
+        </p>
+        <div class="flex items-center gap-2 flex-wrap pt-1 text-xs">
+          <button class="break-btn px-3 py-2 rounded-lg bg-amber-950/80 hover:bg-amber-900 text-amber-200 border border-amber-700/60 font-medium transition text-left" 
+            data-query="Can I bring my pet to work?">
+            🐶 <strong>"Can I bring my pet to work?"</strong>
+            <span class="block text-[10px] text-amber-400/90 font-normal">Doc says "dog-friendly days". Naive gets 0%, Adv HyDE succeeds!</span>
+          </button>
+          <button class="break-btn px-3 py-2 rounded-lg bg-amber-950/80 hover:bg-amber-900 text-amber-200 border border-amber-700/60 font-medium transition text-left" 
+            data-query="What sweet treats does our top boss love?">
+            🧁 <strong>"What sweet treats does our top boss love?"</strong>
+            <span class="block text-[10px] text-amber-400/90 font-normal">Doc says "pistachio cannoli & CEO". Naive gets 0%, Adv HyDE succeeds!</span>
+          </button>
+          <button class="break-btn px-3 py-2 rounded-lg bg-amber-950/80 hover:bg-amber-900 text-amber-200 border border-amber-700/60 font-medium transition text-left" 
+            data-query="How do I access the wireless network to browse the internet on my laptop?">
+            💻 <strong>"How to browse internet on my laptop?"</strong>
+            <span class="block text-[10px] text-amber-400/90 font-normal">Doc says "WPA3 passcode & Wi-Fi SSID". Naive gets 0%, Adv succeeds!</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Controls Row -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3 pt-2">
+        <label for="queryInput" class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+          <i class="fa-solid fa-terminal text-indigo-400"></i> Or type your own question:
+        </label>
+        
+        <div class="flex items-center gap-3 flex-wrap text-xs text-slate-400">
+          <!-- Comparison Mode Selector -->
+          <div class="flex items-center gap-2 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">
+            <span class="font-medium text-slate-300">Arena View:</span>
+            <select id="arenaViewSelect" class="bg-slate-900 border border-indigo-500/50 rounded px-2 py-0.5 text-xs text-indigo-300 font-medium focus:outline-none">
+              <option value="naive_vs_adv" selected>🥊 Naive RAG vs Advanced RAG (Head-to-Head)</option>
+              <option value="raw_vs_rag">⚖️ Raw LLM vs RAG-Augmented LLM</option>
+            </select>
+          </div>
+
+          <!-- Top-K -->
+          <div class="flex items-center gap-2">
+            <span>Top-K:</span>
+            <select id="topKSelect" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+              <option value="1" selected>1 Chunk</option>
+              <option value="2">2 Chunks</option>
+              <option value="3">3 Chunks</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Bar -->
+      <div class="flex flex-col sm:flex-row gap-3">
+        <div class="relative flex-grow">
+          <input 
+            type="text" 
+            id="queryInput" 
+            placeholder="e.g. Can I bring my pet to work?" 
+            value="Can I bring my pet to work?"
+            class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          >
+          <button id="clearInputBtn" class="absolute right-3 top-3.5 text-slate-500 hover:text-slate-300 text-xs">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <button 
+          id="runQueryBtn" 
+          class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-lg shadow-indigo-600/25 transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+        >
+          <i class="fa-solid fa-play text-xs"></i> Run Comparison
+        </button>
+      </div>
+
+      <!-- Regular Sample Queries -->
+      <div class="flex items-center gap-2 flex-wrap pt-1 text-xs">
+        <span class="text-slate-400 font-medium mr-1"><i class="fa-solid fa-lightbulb text-amber-400"></i> Literal match queries:</span>
+        <button class="preset-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" data-query="When is Project NovaStar scheduled to launch and who is leading it?">
+          🚀 NovaStar Launch
+        </button>
+        <button class="preset-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" data-query="What is the office Wi-Fi password and employee wellness stipend?">
+          🔑 Wi-Fi & Stipend
+        </button>
+        <button class="preset-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" data-query="What is the customer refund policy and guarantee duration?">
+          💰 45-Day Refund
+        </button>
+        <button class="preset-btn px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition" data-query="Does CEO Arthur Pendelton have any food allergies and what dessert does he like?">
+          🍰 CEO Food Allergy
+        </button>
+      </div>
+    </section>
+
+    <!-- Execution Stage Pipeline Indicator -->
+    <section id="pipelineSection" class="hidden rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+      <div class="flex items-center justify-between text-xs font-semibold text-slate-400 max-w-4xl mx-auto">
+        <div id="step-query" class="flex items-center gap-2 text-indigo-400">
+          <span class="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center border border-indigo-500/40">1</span>
+          <span>User Query & HyDE</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-slate-700"></i>
+        <div id="step-retrieve" class="flex items-center gap-2 text-slate-400">
+          <span class="w-6 h-6 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center border border-slate-700">2</span>
+          <span>Retrieval & Re-Ranking (R)</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-slate-700"></i>
+        <div id="step-augment" class="flex items-center gap-2 text-slate-400">
+          <span class="w-6 h-6 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center border border-slate-700">3</span>
+          <span>Prompt Augmentation (A)</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-slate-700"></i>
+        <div id="step-generate" class="flex items-center gap-2 text-slate-400">
+          <span class="w-6 h-6 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center border border-slate-700">4</span>
+          <span>Gemini & Self-RAG Audit (G)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Side-by-Side Live Comparison Arena -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 id="arenaTitle" class="text-xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-scale-balanced text-indigo-400"></i> Head-to-Head: Naive RAG vs Advanced RAG
+        </h3>
+        <span id="arenaSubtitleBadge" class="text-xs px-2.5 py-1 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/60 font-mono">
+          Comparing Keyword Match vs HyDE + Re-Ranking
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Left Box -->
+        <div id="leftBoxContainer" class="rounded-2xl border border-rose-900/40 bg-slate-900/80 p-6 flex flex-col justify-between relative overflow-hidden shadow-xl">
+          <div class="absolute -right-8 -top-8 w-24 h-24 bg-rose-500/10 rounded-full blur-xl pointer-events-none"></div>
+          <div>
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+              <div class="flex items-center gap-2">
+                <span id="leftBadge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  <i class="fa-solid fa-box mr-1"></i> Naive RAG (Basic Vector Match)
+                </span>
+                <span id="leftSubBadge" class="text-xs text-slate-500">Literal Keyword Search</span>
+              </div>
+              <span id="leftLatency" class="text-xs font-mono text-slate-400">-- ms</span>
+            </div>
+
+            <!-- Injected Chunks / Score -->
+            <div class="mb-3">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Retrieval Result & Chunk:</p>
+              <div id="leftChunksSummary" class="bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-300 flex items-center gap-2">
+                <span class="text-slate-500 italic">No search performed yet</span>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Generated Response:</p>
+              <div id="leftResponseBox" class="bg-slate-950/60 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 leading-relaxed min-h-[160px] whitespace-pre-wrap">
+                Click <strong>"Run Comparison"</strong> or one of the <strong>"Break Naive RAG"</strong> queries above!
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <span id="leftOutcomeStatus" class="flex items-center gap-1.5 text-amber-400 font-medium">
+              <i class="fa-solid fa-triangle-exclamation"></i> Vulnerable to Vocabulary Mismatch
+            </span>
+            <span id="leftScoreBadge" class="text-slate-500 text-[11px] font-mono">Match: --%</span>
+          </div>
+        </div>
+
+        <!-- Right Box -->
+        <div id="rightBoxContainer" class="rounded-2xl border border-emerald-900/40 bg-slate-900/80 p-6 flex flex-col justify-between relative overflow-hidden shadow-xl">
+          <div class="absolute -right-8 -top-8 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none"></div>
+          <div>
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+              <div class="flex items-center gap-2">
+                <span id="rightBadge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  <i class="fa-solid fa-bolt mr-1"></i> Advanced RAG (HyDE + Re-Rank)
+                </span>
+                <span id="rightSubBadge" class="text-xs text-slate-500">Semantic Bridge + Verification</span>
+              </div>
+              <span id="rightLatency" class="text-xs font-mono text-slate-400">-- ms</span>
+            </div>
+
+            <!-- Injected Chunks / Score -->
+            <div class="mb-3">
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Retrieval Result & Chunk:</p>
+              <div id="rightChunksSummary" class="bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-300 flex items-center gap-2 flex-wrap">
+                <span class="text-slate-500 italic">No search performed yet</span>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Generated Response:</p>
+              <div id="rightResponseBox" class="bg-slate-950/60 border border-emerald-950 rounded-xl p-4 text-sm text-slate-200 leading-relaxed min-h-[160px] whitespace-pre-wrap">
+                Click <strong>"Run Comparison"</strong> to see Advanced RAG retrieve the right facts even with conversational questions!
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+            <span id="rightOutcomeStatus" class="flex items-center gap-1.5 text-emerald-400 font-medium">
+              <i class="fa-solid fa-circle-check"></i> High Recall & Self-Verified
+            </span>
+            <span id="rightScoreBadge" class="text-emerald-400 text-[11px] font-mono">Match: --%</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Deep Dive Tabs: Retrieval, Augmentation, Advanced Lab, Knowledge Base -->
+    <section class="rounded-2xl border border-slate-800 bg-slate-900/70 p-6 backdrop-blur shadow-xl space-y-6">
+      <!-- Tabs Navigation -->
+      <div class="flex items-center border-b border-slate-800 gap-6 flex-wrap">
+        <button id="tabBtnRetrieval" class="tab-btn pb-3 text-sm font-semibold border-b-2 border-indigo-500 text-indigo-400 flex items-center gap-2 transition" onclick="switchTab('retrieval')">
+          <i class="fa-solid fa-magnifying-glass"></i> 1. Retrieval Comparison (Naive vs Re-Rank)
+        </button>
+        <button id="tabBtnAugment" class="tab-btn pb-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 transition" onclick="switchTab('augment')">
+          <i class="fa-solid fa-file-lines"></i> 2. Augmented Prompt Inspector
+        </button>
+        <button id="tabBtnAdvanced" class="tab-btn pb-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 transition" onclick="switchTab('advanced')">
+          <i class="fa-solid fa-bolt text-amber-400"></i> 3. Advanced RAG Lab & Verification
+        </button>
+        <button id="tabBtnDocs" class="tab-btn pb-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 transition" onclick="switchTab('docs')">
+          <i class="fa-solid fa-database"></i> 4. Knowledge Base (<span id="docsCountBadge">5</span>)
+        </button>
+      </div>
+
+      <!-- Tab Content 1: Retrieval Scoring -->
+      <div id="tabContentRetrieval" class="space-y-4">
+        <div class="flex items-center justify-between">
+          <p class="text-xs text-slate-400">
+            Compare how <strong>Naive Search</strong> scored the documents vs how <strong>Cross-Encoder Re-Ranking</strong> re-scored and rescued them.
+          </p>
+        </div>
+        <div id="retrievalCardsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="col-span-full py-8 text-center text-slate-500 text-sm">
+            Run a comparison to see document relevance scores and matched keywords.
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 2: Augmented Prompt Inspector -->
+      <div id="tabContentAugment" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+          <p class="text-xs text-slate-400">
+            The exact, full prompt string generated by RAG and dispatched to Gemini.
+          </p>
+          <button id="copyPromptBtn" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex items-center gap-1.5 transition">
+            <i class="fa-regular fa-copy"></i> Copy Prompt
+          </button>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+          <pre id="augmentedPromptText" class="text-xs font-mono text-slate-300 whitespace-pre-wrap leading-relaxed max-h-96 overflow-y-auto">No prompt generated yet. Execute a query to inspect the augmented prompt.</pre>
+        </div>
+      </div>
+
+      <!-- Tab Content 3: Advanced RAG Lab & Grounding Audit -->
+      <div id="tabContentAdvanced" class="hidden space-y-6">
+        <div>
+          <h4 class="font-bold text-white text-base flex items-center gap-2">
+            <i class="fa-solid fa-microchip text-indigo-400"></i> Advanced RAG Mechanisms in Action
+          </h4>
+          <p class="text-xs text-slate-400">These techniques solve the major real-world failure modes of Naive RAG.</p>
+        </div>
+
+        <!-- 3 Feature Widgets -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          
+          <!-- Widget A: HyDE -->
+          <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                1. HyDE Transformation
+              </span>
+              <span class="text-[11px] text-slate-500">Query Expansion</span>
+            </div>
+            <p class="text-xs text-slate-300 font-medium">Hypothetical Document Generated:</p>
+            <div id="hydeContentBox" class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs text-slate-300 font-mono italic leading-relaxed min-h-[90px]">
+              Execute a query to see how the LLM generates a hypothetical answer to bridge vector space distance.
+            </div>
+            <p class="text-[11px] text-slate-500">
+              <i class="fa-solid fa-circle-info text-indigo-400 mr-1"></i> HyDE generates an answer passage before searching so document-to-document similarity is maximized.
+            </p>
+          </div>
+
+          <!-- Widget B: Lost in the Middle -->
+          <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                2. Context Order (U-Shape)
+              </span>
+              <span class="text-[11px] text-slate-500">Attention Optimization</span>
+            </div>
+            <p class="text-xs text-slate-300 font-medium">Context Chunk Placement Strategy:</p>
+            <div id="contextOrderBox" class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs text-slate-300 leading-relaxed min-h-[90px] space-y-2">
+              <span class="text-slate-500">U-Shaped ordering mitigates the Stanford 'Lost in the Middle' attention degradation.</span>
+            </div>
+            <p class="text-[11px] text-slate-500">
+              <i class="fa-solid fa-circle-info text-indigo-400 mr-1"></i> Highest-relevance chunks are placed at prompt edges (top & bottom) where attention heads focus strongest.
+            </p>
+          </div>
+
+          <!-- Widget C: Self-RAG Grounding Audit -->
+          <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                3. Self-RAG Grounding Audit
+              </span>
+              <span id="groundingScoreBadge" class="text-[11px] font-bold text-emerald-400 font-mono">-- %</span>
+            </div>
+            <p class="text-xs text-slate-300 font-medium">Claim-Level Verification Status:</p>
+            <div id="groundingStatusBox" class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs text-slate-300 leading-relaxed min-h-[90px] flex items-center justify-center">
+              <span class="text-slate-500 text-center">Run comparison to audit each sentence against ground truth.</span>
+            </div>
+            <p class="text-[11px] text-slate-500">
+              <i class="fa-solid fa-circle-info text-indigo-400 mr-1"></i> Automated verification decomposes generated output into claims and checks for ungrounded hallucination.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Detailed Sentence-by-Sentence Claim Audit -->
+        <div class="border-t border-slate-800 pt-4 space-y-3">
+          <h5 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Deconstructed Sentence Claims & Citation Mapping:</h5>
+          <div id="claimsListContainer" class="space-y-2 text-xs">
+            <p class="text-slate-500 text-xs italic">No claims analyzed yet.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tab Content 4: Knowledge Base Manager -->
+      <div id="tabContentDocs" class="hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+          <div>
+            <h4 class="font-bold text-white text-base">Knowledge Base Chunks</h4>
+            <p class="text-xs text-slate-400">Add custom documents or confidential company facts to see RAG retrieve them instantly.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="resetDocsBtn" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-rotate-left"></i> Reset to Default
+            </button>
+            <button id="showAddDocModalBtn" class="text-xs px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-plus"></i> Add Document
+            </button>
+          </div>
+        </div>
+
+        <!-- Document Cards List -->
+        <div id="documentsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Loaded via JS -->
+        </div>
+
+        <!-- Add Document Modal -->
+        <div id="addDocModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h4 class="font-bold text-white text-base">Add New Knowledge Document</h4>
+              <button id="closeAddDocModalBtn" class="text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Document Title</label>
+                <input id="newDocTitle" type="text" placeholder="e.g. Project Apollo Budget & Timetable" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-xs focus:outline-none focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Category</label>
+                <input id="newDocCategory" type="text" placeholder="e.g. Engineering, Finance, HR" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-xs focus:outline-none focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-slate-300 font-medium mb-1">Document Content / Fact</label>
+                <textarea id="newDocContent" rows="4" placeholder="Write specific facts that the AI can retrieve..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-xs focus:outline-none focus:border-indigo-500"></textarea>
+              </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+              <button id="cancelAddDocBtn" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs">Cancel</button>
+              <button id="saveDocBtn" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs">Save to Knowledge Base</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Deep Dive Educational Section: "Things You Didn't Know About RAG" -->
+    <section class="space-y-4 pt-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="text-xl font-extrabold text-white flex items-center gap-2">
+            <i class="fa-solid fa-atom text-indigo-400"></i> What Most People Don't Know: 5 Advanced RAG Truths
+          </h3>
+          <p class="text-xs text-slate-400">State-of-the-art developments, real-world failure modes, and recent advancements.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        
+        <!-- Insight 1: Vector Asymmetry & HyDE -->
+        <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 space-y-2 hover:border-indigo-500/50 transition">
+          <div class="flex items-center gap-2 text-amber-400 font-bold text-sm">
+            <i class="fa-solid fa-arrows-split-up-and-left"></i>
+            <h4>1. The Question-Answer Vector Asymmetry</h4>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            In naive vector search, you embed a <em>question</em> and compare it to <em>answer</em> chunks. But questions have completely different grammatical structure and vocabulary than expository documents!
+          </p>
+          <div class="bg-slate-950 rounded p-2 text-[11px] text-slate-400 font-mono">
+            <strong>Solution:</strong> HyDE generates a hypothetical answer passage first, so you compare <em>document vectors to document vectors</em>.
+          </div>
+        </div>
+
+        <!-- Insight 2: Lost in the Middle -->
+        <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 space-y-2 hover:border-indigo-500/50 transition">
+          <div class="flex items-center gap-2 text-blue-400 font-bold text-sm">
+            <i class="fa-solid fa-chart-line"></i>
+            <h4>2. The "Lost in the Middle" U-Curve</h4>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Stanford researchers proved that even with a 1M token context window, LLMs suffer <strong>attention degradation</strong> on facts placed in the middle of prompts. Performance drops by up to 50%!
+          </p>
+          <div class="bg-slate-950 rounded p-2 text-[11px] text-slate-400 font-mono">
+            <strong>Solution:</strong> Context re-ordering puts the highest-scoring chunks at index 0 and index N-1 (the U-shape).
+          </div>
+        </div>
+
+        <!-- Insight 3: Bi-Encoder vs Cross-Encoder -->
+        <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 space-y-2 hover:border-indigo-500/50 transition">
+          <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+            <i class="fa-solid fa-layer-group"></i>
+            <h4>3. 2-Stage Retrieval (Re-Ranking)</h4>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Vector databases use <strong>Bi-Encoders</strong> (embed query and doc separately). It's fast (10ms over 1M docs) but inaccurate. Production RAG uses a <strong>Cross-Encoder Re-Ranker</strong> on the top 20 candidates.
+          </p>
+          <div class="bg-slate-950 rounded p-2 text-[11px] text-slate-400 font-mono">
+            <strong>Impact:</strong> Boosts Hit-Rate@3 accuracy by 25-35% in enterprise benchmarks.
+          </div>
+        </div>
+
+        <!-- Insight 4: Negations & Exact IDs -->
+        <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 space-y-2 hover:border-indigo-500/50 transition">
+          <div class="flex items-center gap-2 text-rose-400 font-bold text-sm">
+            <i class="fa-solid fa-ban"></i>
+            <h4>4. Dense Vectors Fail at Negation & IDs</h4>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Cosine distance cannot handle logic operators like <em>"Show invoices NOT from Acme"</em> or exact part numbers (<em>"Error code 0x8007"</em>). Vectors place "Acme" close to "NOT Acme".
+          </p>
+          <div class="bg-slate-950 rounded p-2 text-[11px] text-slate-400 font-mono">
+            <strong>Solution:</strong> Hybrid Search (BM25 lexical search + Dense Vectors fused via Reciprocal Rank Fusion).
+          </div>
+        </div>
+
+        <!-- Insight 5: GraphRAG & Agentic RAG -->
+        <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 space-y-2 hover:border-indigo-500/50 transition">
+          <div class="flex items-center gap-2 text-violet-400 font-bold text-sm">
+            <i class="fa-solid fa-network-wired"></i>
+            <h4>5. GraphRAG & Agentic RAG (2024-2026)</h4>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Standard RAG fails at global queries like <em>"What are the main themes across all 500 reports?"</em>. <strong>GraphRAG (Microsoft)</strong> extracts knowledge graphs and community clusters to answer global corpus questions.
+          </p>
+          <div class="bg-slate-950 rounded p-2 text-[11px] text-slate-400 font-mono">
+            <strong>Agentic RAG:</strong> An LLM agent plans multi-step retrieval queries iteratively instead of a single search.
+          </div>
+        </div>
+
+        <!-- Insight 6: Chunk Size Dilemma -->
+        <div class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 space-y-2 hover:border-indigo-500/50 transition">
+          <div class="flex items-center gap-2 text-cyan-400 font-bold text-sm">
+            <i class="fa-solid fa-scissors"></i>
+            <h4>6. The Chunking Dilemma</h4>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            If chunks are too small (100 words), context is lost. If chunks are too large (1,000 words), the embedding vector becomes "muddy" and diluted.
+          </p>
+          <div class="bg-slate-950 rounded p-2 text-[11px] text-slate-400 font-mono">
+            <strong>Modern Solution:</strong> Parent-Child chunking (embed small child chunks for search, pass larger parent chunk for generation).
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 py-6 text-center text-xs text-slate-500 mt-12">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p>Interactive RAG Educational Platform &bull; Built with Flask & Gemini API</p>
+      <p class="text-slate-600">Retrieval + Augmentation + Generation = Grounded AI</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
