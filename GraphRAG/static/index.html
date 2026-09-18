@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GraphRAG: Knowledge Graphs & Multi-Hop Reasoning Studio</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="logo-badge">GRAPH</span>
+        <h2>GraphRAG Studio</h2>
+      </div>
+      <p class="subtitle">Knowledge Graphs & Multi-Hop Reasoning</p>
+
+      <nav class="nav-tabs">
+        <button class="nav-btn active" data-tab="visualizer">🕸️ Interactive Graph</button>
+        <button class="nav-btn" data-tab="path">🧭 Multi-Hop Path Finder</button>
+        <button class="nav-btn" data-tab="hybrid">⚡ Hybrid GraphRAG Query</button>
+      </nav>
+
+      <div class="stats-box">
+        <div class="stat-row">
+          <span>Entities (Nodes):</span>
+          <strong id="stat-node-count">9</strong>
+        </div>
+        <div class="stat-row">
+          <span>Relations (Edges):</span>
+          <strong id="stat-edge-count">9</strong>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Tab 1: Visualizer -->
+      <section id="tab-visualizer" class="tab-pane active">
+        <div class="header-box">
+          <h1>🕸️ Interactive Enterprise Knowledge Graph</h1>
+          <p>Explore entities, directional relationships, and hub centrality. Nodes are positioned dynamically on the Canvas below.</p>
+        </div>
+
+        <div class="card graph-card">
+          <canvas id="graph-canvas" width="850" height="460"></canvas>
+          <div class="graph-legend">
+            <span><i class="dot" style="background:#38bdf8;"></i> Organization</span>
+            <span><i class="dot" style="background:#a855f7;"></i> Project</span>
+            <span><i class="dot" style="background:#34d399;"></i> Person</span>
+            <span><i class="dot" style="background:#f59e0b;"></i> Technology</span>
+            <span><i class="dot" style="background:#f43f5e;"></i> Vehicle</span>
+            <span><i class="dot" style="background:#ec4899;"></i> Location</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 2: Path Finder -->
+      <section id="tab-path" class="tab-pane">
+        <div class="header-box">
+          <h1>🧭 Multi-Hop Relational Path Finding</h1>
+          <p>Find the shortest semantic path connecting two distant entities across the knowledge graph.</p>
+        </div>
+
+        <div class="grid-two">
+          <div class="card">
+            <h3>Select Endpoints</h3>
+            <label class="form-label">Source Entity:</label>
+            <select id="path-src" class="input-field"></select>
+
+            <label class="form-label mt-3">Target Entity:</label>
+            <select id="path-tgt" class="input-field"></select>
+
+            <button id="btn-find-path" class="btn primary-btn mt-4">Find Shortest Relational Path</button>
+          </div>
+
+          <div class="card">
+            <h3>Discovered Connection</h3>
+            <div id="path-result" class="path-display">Select entities to find connection path.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 3: Hybrid Query -->
+      <section id="tab-hybrid" class="tab-pane">
+        <div class="header-box">
+          <h1>⚡ Hybrid GraphRAG Retrieval Engine</h1>
+          <p>Compare standard chunk retrieval with Knowledge Graph neighborhood expansion for global multi-entity queries.</p>
+        </div>
+
+        <div class="card mb-4">
+          <div class="input-group">
+            <input type="text" id="hybrid-q-input" class="input-field" value="How is Dr. Elena Vance connected to the photonic technology developed at QuantumNova?">
+            <button id="btn-hybrid-run" class="btn primary-btn">Execute GraphRAG</button>
+          </div>
+          <div class="sample-queries">
+            <span>Try sample queries:</span>
+            <button class="chip" data-hq="How is Dr. Elena Vance connected to the photonic technology developed at QuantumNova?">Elena Vance & Photonic</button>
+            <button class="chip" data-hq="Who manufactures the satellite transponders for Project NovaStar?">NovaStar & Contractors</button>
+          </div>
+        </div>
+
+        <div id="hybrid-results" class="card" style="display:none;">
+          <h3>Graph-Enriched Context & Synthesis</h3>
+          <div class="metric-label mt-3">Final Grounded Synthesis:</div>
+          <div id="hybrid-synthesis" class="final-box"></div>
+
+          <h4 class="mt-4">Traversed Knowledge Graph Triplets:</h4>
+          <div id="hybrid-triplets" class="code-box"></div>
+
+          <h4 class="mt-4">Vector Retrieved Document Chunks:</h4>
+          <div id="hybrid-docs" class="code-box"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
