@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦜🔗 LangChain Interactive Mastery Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            },
+            gemini: {
+              500: '#3b82f6',
+              600: '#2563eb',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 text-2xl">
+          🦜
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="font-bold text-lg tracking-tight text-white flex items-center gap-1.5">
+              LangChain <span class="text-emerald-400 font-extrabold">Mastery</span>
+            </h1>
+            <span class="px-2 py-0.5 text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-full">
+              Gemini Flash 3.6
+            </span>
+          </div>
+          <p class="text-xs text-slate-400">Interactive Architecture & Live Code Execution</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <a href="http://127.0.0.1:5000" target="_blank" class="text-xs px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-brain text-purple-400"></i> Open RAG Explainer (Port 5000)
+        </a>
+        <div class="hidden md:flex items-center text-xs text-emerald-400 bg-emerald-950/50 border border-emerald-800/60 px-3 py-1.5 rounded-lg">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse mr-2"></span>
+          API Connected
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- SIDEBAR NAVIGATION TABS -->
+    <aside class="lg:col-span-3 space-y-2">
+      <div class="text-xs font-semibold tracking-wider text-slate-400 uppercase px-3 mb-2">
+        Core Concepts
+      </div>
+      <nav class="space-y-1">
+        <button onclick="switchTab('models')" id="tab-btn-models" class="tab-btn active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left">
+          <i class="fa-solid fa-comment-dots text-emerald-400 w-5"></i>
+          <span>1. Models & Prompts</span>
+        </button>
+        <button onclick="switchTab('parsers')" id="tab-btn-parsers" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left text-slate-400 hover:text-white hover:bg-slate-900">
+          <i class="fa-solid fa-code text-teal-400 w-5"></i>
+          <span>2. Output Parsers</span>
+        </button>
+        <button onclick="switchTab('chains')" id="tab-btn-chains" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left text-slate-400 hover:text-white hover:bg-slate-900">
+          <i class="fa-solid fa-diagram-project text-blue-400 w-5"></i>
+          <span>3. LCEL & Chains</span>
+        </button>
+        <button onclick="switchTab('memory')" id="tab-btn-memory" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left text-slate-400 hover:text-white hover:bg-slate-900">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-400 w-5"></i>
+          <span>4. Conversational Memory</span>
+        </button>
+        <button onclick="switchTab('splitters')" id="tab-btn-splitters" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left text-slate-400 hover:text-white hover:bg-slate-900">
+          <i class="fa-solid fa-scissors text-amber-400 w-5"></i>
+          <span>5. Text Splitters</span>
+        </button>
+        <button onclick="switchTab('rag')" id="tab-btn-rag" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left text-slate-400 hover:text-white hover:bg-slate-900">
+          <i class="fa-solid fa-database text-purple-400 w-5"></i>
+          <span>6. Vector Store & RAG</span>
+        </button>
+        <button onclick="switchTab('tools')" id="tab-btn-tools" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left text-slate-400 hover:text-white hover:bg-slate-900">
+          <i class="fa-solid fa-wrench text-orange-400 w-5"></i>
+          <span>7. Tools & Function Calls</span>
+        </button>
+        <button onclick="switchTab('agent')" id="tab-btn-agent" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left text-slate-400 hover:text-white hover:bg-slate-900">
+          <i class="fa-solid fa-robot text-rose-400 w-5"></i>
+          <span>8. Autonomous Agents</span>
+        </button>
+        <button onclick="switchTab('runner')" id="tab-btn-runner" class="tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-left text-slate-400 hover:text-white hover:bg-slate-900">
+          <i class="fa-solid fa-terminal text-yellow-400 w-5"></i>
+          <span>9. Live Script Runner</span>
+        </button>
+      </nav>
+
+      <!-- Architecture Cheat Sheet Card -->
+      <div class="mt-6 p-4 rounded-xl border border-slate-800 bg-slate-900/40 text-xs text-slate-400 space-y-2">
+        <div class="font-semibold text-slate-200 flex items-center gap-1.5">
+          <i class="fa-solid fa-bolt text-amber-400"></i> What is LCEL?
+        </div>
+        <p>
+          <code class="text-emerald-400">chain = prompt | llm | parser</code>
+        </p>
+        <p>
+          The pipe operator binds components into unified Runnables supporting batching, async, streaming, and parallel branching.
+        </p>
+      </div>
+    </aside>
+
+    <!-- CONTENT DISPLAY AREA -->
+    <main class="lg:col-span-9">
+
+      <!-- TAB 1: MODELS & PROMPTS -->
+      <section id="pane-models" class="tab-pane space-y-6">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-comment-dots text-emerald-400"></i> Chat Models & Prompt Templates
+              </h2>
+              <p class="text-sm text-slate-400 mt-1">
+                LangChain decouples prompt engineering from raw strings using <code class="text-emerald-300">ChatPromptTemplate</code>.
+              </p>
+            </div>
+            <span class="text-xs px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg border border-slate-700">Example 01</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">System Message (Model Persona)</label>
+                <textarea id="model-system" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm focus:border-emerald-500 focus:outline-none">You are a witty, concise tech professor who explains complex concepts in 2 sentences with an emoji.</textarea>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Human Template with Variables</label>
+                <input id="model-template" type="text" value="Explain {topic} in {style} style." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm focus:border-emerald-500 focus:outline-none">
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-400 mb-1">{topic}</label>
+                  <input id="model-var-topic" type="text" value="LangChain LCEL" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-sm">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-400 mb-1">{style}</label>
+                  <input id="model-var-style" type="text" value="Pirate" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-sm">
+                </div>
+              </div>
+
+              <button onclick="runModelsPrompt()" id="btn-run-prompt" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+                <i class="fa-solid fa-paper-plane"></i> Render & Invoke Model
+              </button>
+            </div>
+
+            <!-- Output Card -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
+                  <span>Model Execution Result</span>
+                  <span id="model-latency" class="text-emerald-400 font-mono">-- ms</span>
+                </div>
+                <div id="model-output-box" class="mt-4 text-sm text-slate-300 leading-relaxed font-sans min-h-[140px] whitespace-pre-wrap">
+                  Click "Render & Invoke Model" to test prompt formatting and receive Gemini's response.
+                </div>
+              </div>
+
+              <div id="model-rendered-inspector" class="hidden mt-4 pt-3 border-t border-slate-800/80 text-xs font-mono text-slate-400">
+                <span class="text-emerald-400 font-semibold">Rendered Messages sent to Gemini:</span>
+                <div id="model-rendered-list" class="mt-1 space-y-1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: OUTPUT PARSERS -->
+      <section id="pane-parsers" class="tab-pane hidden space-y-6">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-code text-teal-400"></i> Output Parsers (Structured Data)
+              </h2>
+              <p class="text-sm text-slate-400 mt-1">
+                Parse unstructured LLM output into strongly-typed objects using <code class="text-teal-300">PydanticOutputParser</code> or <code class="text-teal-300">JsonOutputParser</code>.
+              </p>
+            </div>
+            <span class="text-xs px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg border border-slate-700">Example 02</span>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <label class="text-xs font-semibold text-slate-300">Parser Format:</label>
+              <div class="flex rounded-lg bg-slate-950 border border-slate-800 p-1">
+                <button onclick="selectParser('string')" id="btn-parse-str" class="px-3 py-1 text-xs rounded-md text-slate-400 hover:text-white">String</button>
+                <button onclick="selectParser('json')" id="btn-parse-json" class="px-3 py-1 text-xs rounded-md text-slate-400 hover:text-white">JSON Dict</button>
+                <button onclick="selectParser('pydantic')" id="btn-parse-pyd" class="px-3 py-1 text-xs rounded-md bg-teal-500 text-white font-semibold">Pydantic Schema</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Target Subject</label>
+                  <input id="parser-topic" type="text" value="Vector Databases for AI" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm focus:border-teal-500 focus:outline-none">
+                </div>
+
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs font-mono text-slate-400 space-y-1">
+                  <div class="text-teal-400 font-semibold">Pydantic Model Schema:</div>
+                  <pre class="text-slate-300 overflow-x-auto text-[11px]">class TechAnalysis(BaseModel):
+    technology: str
+    strengths: List[str]
+    primary_drawback: str
+    verdict: str</pre>
+                </div>
+
+                <button onclick="runParserDemo()" id="btn-run-parser" class="w-full py-3 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-teal-500/20">
+                  <i class="fa-solid fa-play"></i> Execute Chain & Parse Output
+                </button>
+              </div>
+
+              <!-- Output Card -->
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
+                    <span id="parser-badge-type">Parsed Data (Pydantic Schema)</span>
+                    <span id="parser-latency" class="text-teal-400 font-mono">-- ms</span>
+                  </div>
+                  <pre id="parser-output-box" class="mt-4 text-xs font-mono text-teal-300 leading-relaxed overflow-x-auto min-h-[160px]">
+Click "Execute Chain" to see parsed output.
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: LCEL & CHAINS -->
+      <section id="pane-chains" class="tab-pane hidden space-y-6">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-diagram-project text-blue-400"></i> LCEL Chains & Parallel Execution
+              </h2>
+              <p class="text-sm text-slate-400 mt-1">
+                LangChain Expression Language (LCEL) allows running multiple chains sequentially or concurrently with <code class="text-blue-300">RunnableParallel</code>.
+              </p>
+            </div>
+            <span class="text-xs px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg border border-slate-700">Example 03</span>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-center gap-4">
+              <label class="text-xs font-semibold text-slate-300">Chain Mode:</label>
+              <label class="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="radio" name="chain-mode" value="parallel" checked onchange="updateChainMode(this.value)" class="text-blue-500">
+                <span>Parallel (Summary + Sentiment + Keywords concurrently)</span>
+              </label>
+              <label class="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="radio" name="chain-mode" value="sequential" onchange="updateChainMode(this.value)" class="text-blue-500">
+                <span>Sequential (Proposal ➔ Critique ➔ Revised Pitch)</span>
+              </label>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Input Text</label>
+              <textarea id="chain-input" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none">Our AI robotics startup raised $12M to automate fruit harvesting in vertical greenhouses, reducing physical farm labor hazards while increasing yield by 40%.</textarea>
+            </div>
+
+            <button onclick="runChainDemo()" id="btn-run-chain" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20">
+              <i class="fa-solid fa-play"></i> Execute LCEL Pipeline
+            </button>
+
+            <!-- Results Grid -->
+            <div id="chain-result-container" class="mt-6">
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+                <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
+                  <span id="chain-header">Pipeline Execution Output</span>
+                  <span id="chain-latency" class="text-blue-400 font-mono">-- ms</span>
+                </div>
+                <div id="chain-output-grid" class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                    <span class="text-xs font-semibold text-blue-400">Branch 1: Summary</span>
+                    <p id="chain-res-1" class="mt-1 text-slate-300">Run pipeline to see summary.</p>
+                  </div>
+                  <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                    <span class="text-xs font-semibold text-teal-400">Branch 2: Tone & Sentiment</span>
+                    <p id="chain-res-2" class="mt-1 text-slate-300">Run pipeline to see sentiment.</p>
+                  </div>
+                  <div class="p-3 bg-slate-900 rounded-lg border border-slate-800">
+                    <span class="text-xs font-semibold text-purple-400">Branch 3: Technical Keywords</span>
+                    <p id="chain-res-3" class="mt-1 text-slate-300">Run pipeline to see keywords.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: CONVERSATIONAL MEMORY -->
+      <section id="pane-memory" class="tab-pane hidden space-y-6">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> Conversational Memory & Multi-Turn State
+              </h2>
+              <p class="text-sm text-slate-400 mt-1">
+                Preserve conversation context per session using <code class="text-indigo-300">RunnableWithMessageHistory</code> and <code class="text-indigo-300">MessagesPlaceholder</code>.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="resetMemorySession()" class="text-xs px-3 py-1.5 bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-800/50 rounded-lg transition">
+                <i class="fa-solid fa-trash-can mr-1"></i> Reset Memory
+              </button>
+              <span class="text-xs px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg border border-slate-700">Example 04</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-1 space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Session ID</label>
+                <select id="memory-session" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-sm" onchange="loadSessionHistory()">
+                  <option value="alice_session">Alice (Bioinformatics)</option>
+                  <option value="bob_session">Bob (Cloud Security)</option>
+                  <option value="custom_session">Custom Session</option>
+                </select>
+              </div>
+
+              <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-2">
+                <div class="text-indigo-400 font-semibold">Try this 3-step test:</div>
+                <ol class="list-decimal list-inside space-y-1 text-slate-300 text-[11px]">
+                  <li>"My name is Sarah, and I am studying solar astronomy."</li>
+                  <li>"What telescope should I buy for my field?"</li>
+                  <li>"What was my name and topic again?"</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- Chat Window -->
+            <div class="md:col-span-2 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col h-[400px]">
+              <div id="memory-chat-box" class="flex-1 overflow-y-auto space-y-3 pr-2 text-sm">
+                <div class="text-xs text-slate-500 text-center py-2">Session started. Type a message below.</div>
+              </div>
+
+              <form onsubmit="sendMemoryMessage(event)" class="mt-3 flex gap-2">
+                <input id="memory-input" type="text" placeholder="Type a message..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none">
+                <button type="submit" id="btn-send-mem" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold transition">
+                  <i class="fa-solid fa-arrow-up"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: TEXT SPLITTERS -->
+      <section id="pane-splitters" class="tab-pane hidden space-y-6">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-scissors text-amber-400"></i> Document Text Splitters (Chunking)
+              </h2>
+              <p class="text-sm text-slate-400 mt-1">
+                Visualizing how <code class="text-amber-300">RecursiveCharacterTextSplitter</code> creates chunks with overlap to prevent context loss.
+              </p>
+            </div>
+            <span class="text-xs px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg border border-slate-700">Example 05</span>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Source Text to Chunk</label>
+              <textarea id="splitter-text" rows="4" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm focus:border-amber-500 focus:outline-none">ACME CORP ROBOTICS SAFETY MANUAL (REV 4.2)
+1. SYSTEM INITIALIZATION & SENSORS:
+Before engaging the hydraulic locomotion sub-system, all LiDAR optical arrays must be calibrated against the high-contrast checkerboard target at 3.0 meters distance. If the optical baseline reports greater than 0.05% error, the emergency halt relay (EHR-9) will automatically trip.
+
+2. POWER MANAGEMENT & BATTERY SAFEGUARDS:
+The drone is powered by a dual lithium-sulfur power pack operating at 48V nominal. Operating temperatures must remain strictly between -10°C and +45°C. Alert Code 882 indicates power cell imbalance.</textarea>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Chunk Size (chars)</label>
+                <input id="splitter-size" type="number" value="180" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Chunk Overlap (chars)</label>
+                <input id="splitter-overlap" type="number" value="40" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-sm">
+              </div>
+              <div class="col-span-2 flex items-end">
+                <button onclick="runSplitterDemo()" id="btn-run-split" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20">
+                  <i class="fa-solid fa-scissors"></i> Split Text into Chunks
+                </button>
+              </div>
+            </div>
+
+            <!-- Chunk Inspector -->
+            <div class="mt-4">
+              <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+                <span>Resulting Chunks: <strong id="splitter-count" class="text-amber-400">0</strong></span>
+                <span class="text-[11px] text-slate-500">Notice preserved sentence boundaries</span>
+              </div>
+              <div id="splitter-chunks-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[350px] overflow-y-auto">
+                <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-400 text-center col-span-2">
+                  Click "Split Text into Chunks" to visualize chunk distribution.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: VECTOR STORE & RAG -->
+      <section id="pane-rag" class="tab-pane hidden space-y-6">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-database text-purple-400"></i> Vector Store & LCEL RAG Pipeline
+              </h2>
+              <p class="text-sm text-slate-400 mt-1">
+                LangChain simplifies RAG into a clean LCEL chain using <code class="text-purple-300">InMemoryVectorStore</code> and <code class="text-purple-300">GoogleGenerativeAIEmbeddings</code>.
+              </p>
+            </div>
+            <span class="text-xs px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg border border-slate-700">Example 06</span>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex gap-2 flex-wrap">
+              <span class="text-xs text-slate-400 self-center">Quick Queries:</span>
+              <button onclick="setRagQuery('What is the remote workstation stipend amount and code?')" class="text-xs px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700">Remote Stipend</button>
+              <button onclick="setRagQuery('When is the zero-knowledge audit for Project Chronos?')" class="text-xs px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700">Project Chronos Audit</button>
+              <button onclick="setRagQuery('What is Arthur\'s favorite dessert and why?')" class="text-xs px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700">Arthur's Dessert</button>
+            </div>
+
+            <div>
+              <input id="rag-query" type="text" value="What is the remote workstation stipend amount and code?" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm focus:border-purple-500 focus:outline-none">
+            </div>
+
+            <button onclick="runRagDemo()" id="btn-run-rag" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-purple-500/20">
+              <i class="fa-solid fa-magnifying-glass"></i> Retrieve & Generate (Side-by-Side Comparison)
+            </button>
+
+            <!-- Comparison Arena -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+              <div class="p-4 bg-slate-950 border border-red-900/40 rounded-xl">
+                <div class="flex items-center justify-between text-xs font-semibold text-red-400 pb-2 border-b border-slate-800">
+                  <span>❌ Without RAG (Pure Gemini Cutoff)</span>
+                </div>
+                <div id="rag-res-vanilla" class="mt-3 text-sm text-slate-300 leading-relaxed min-h-[120px]">
+                  Click to compare.
+                </div>
+              </div>
+
+              <div class="p-4 bg-slate-950 border border-emerald-900/40 rounded-xl">
+                <div class="flex items-center justify-between text-xs font-semibold text-emerald-400 pb-2 border-b border-slate-800">
+                  <span>✅ With LangChain LCEL RAG (Grounded)</span>
+                  <span id="rag-latency" class="text-xs font-mono text-emerald-400">-- ms</span>
+                </div>
+                <div id="rag-res-grounded" class="mt-3 text-sm text-slate-300 leading-relaxed min-h-[120px]">
+                  Click to compare.
+                </div>
+              </div>
+            </div>
+
+            <!-- Retrieved Docs Inspector -->
+            <div id="rag-retrieved-box" class="hidden mt-4 p-4 bg-slate-950 rounded-xl border border-slate-800 text-xs">
+              <span class="font-semibold text-purple-400">Retrieved Semantic Vector Chunks:</span>
+              <div id="rag-retrieved-list" class="mt-2 space-y-2"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 7: TOOLS & FUNCTION CALLING -->
+      <section id="pane-tools" class="tab-pane hidden space-y-6">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-wrench text-orange-400"></i> Tools & Function Calling
+              </h2>
+              <p class="text-sm text-slate-400 mt-1">
+                LangChain binds Python functions with <code class="text-orange-300">@tool</code>, converting signatures to Gemini function calling schemas.
+              </p>
+            </div>
+            <span class="text-xs px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg border border-slate-700">Example 07</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Select Tool</label>
+                <select id="tool-select" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm" onchange="updateToolArgsUI()">
+                  <option value="check_flight_status">check_flight_status (Live Flight Database)</option>
+                  <option value="calculate_compound_interest">calculate_compound_interest (Financial Math)</option>
+                  <option value="get_stock_price">get_stock_price (Market Ticker Lookup)</option>
+                </select>
+              </div>
+
+              <div id="tool-args-container" class="space-y-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-400 mb-1">Flight Number</label>
+                  <input id="tool-arg-1" type="text" value="BA-249" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-sm">
+                </div>
+              </div>
+
+              <button onclick="runToolDemo()" id="btn-run-tool" class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20">
+                <i class="fa-solid fa-bolt"></i> Invoke Tool Function
+              </button>
+            </div>
+
+            <!-- Tool Result Card -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
+                  <span>Tool Execution Output</span>
+                  <span class="text-orange-400 font-mono">Python Native</span>
+                </div>
+                <pre id="tool-output-box" class="mt-4 text-xs font-mono text-orange-300 leading-relaxed min-h-[140px]">
+Select a tool and click "Invoke Tool Function".
+                </pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 8: AUTONOMOUS AGENTS -->
+      <section id="pane-agent" class="tab-pane hidden space-y-6">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-robot text-rose-400"></i> Autonomous AI Agent (ReAct Loop)
+              </h2>
+              <p class="text-sm text-slate-400 mt-1">
+                The agent reasons, chooses tools dynamically, executes actions, and synthesizes answers across multi-step problems.
+              </p>
+            </div>
+            <span class="text-xs px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg border border-slate-700">Example 08</span>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Complex Multi-Step Goal for Agent</label>
+              <textarea id="agent-goal" rows="2" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm focus:border-rose-500 focus:outline-none">Find the stock price of NVDA, then calculate the total purchase cost for 14 shares with 7.5% processing fee.</textarea>
+            </div>
+
+            <button onclick="runAgentDemo()" id="btn-run-agent" class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Launch Agent Reasoning Loop
+            </button>
+
+            <!-- Agent Trace Log -->
+            <div class="mt-6">
+              <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
+                <span>Autonomous Execution Trace</span>
+                <span id="agent-latency" class="text-rose-400 font-mono">-- ms</span>
+              </div>
+              <div id="agent-steps-container" class="mt-4 space-y-3">
+                <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-400 text-center">
+                  Click "Launch Agent Reasoning Loop" to view live Thought ➔ Action ➔ Observation steps.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 9: LIVE SCRIPT RUNNER -->
+      <section id="pane-runner" class="tab-pane hidden space-y-6">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+            <div>
+              <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-terminal text-yellow-400"></i> Standalone Python Script Runner
+              </h2>
+              <p class="text-sm text-slate-400 mt-1">
+                Execute any of the 8 standalone example scripts with 1-click and view live terminal output or source code.
+              </p>
+            </div>
+            <span class="text-xs px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg border border-slate-700">8 Standalone Tutorials</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Script List -->
+            <div class="lg:col-span-4 space-y-2">
+              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Select Example:</div>
+              <div id="script-list" class="space-y-1.5"></div>
+            </div>
+
+            <!-- Terminal Output & Code View -->
+            <div class="lg:col-span-8 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span id="runner-active-script" class="text-xs font-mono text-yellow-400 font-semibold">01_chat_models_and_prompts.py</span>
+                </div>
+                <div class="flex gap-2">
+                  <button onclick="toggleScriptView('output')" id="btn-view-output" class="text-xs px-3 py-1 bg-yellow-500 text-slate-950 font-bold rounded-lg">Output</button>
+                  <button onclick="toggleScriptView('code')" id="btn-view-code" class="text-xs px-3 py-1 bg-slate-800 text-slate-300 rounded-lg hover:text-white">Source Code</button>
+                  <button onclick="runSelectedScript()" id="btn-run-script" class="text-xs px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg flex items-center gap-1">
+                    <i class="fa-solid fa-play text-[10px]"></i> Run Script
+                  </button>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 h-[420px] overflow-y-auto">
+                <pre id="runner-terminal" class="text-xs font-mono text-slate-300 leading-relaxed whitespace-pre-wrap">Click "Run Script" to execute this tutorial script.</pre>
+                <pre id="runner-code" class="hidden text-xs font-mono text-emerald-300 leading-relaxed whitespace-pre-wrap"></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="border-t border-slate-800/60 py-4 bg-slate-950 text-center text-xs text-slate-500">
+    Interactive LangChain Explainer • Powered by Google Gemini API & LangChain Expression Language (LCEL)
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
