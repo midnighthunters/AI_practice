@@ -1,0 +1,430 @@
+:root {
+  --bg-space: #060913;
+  --panel-bg: #0d1527;
+  --card-bg: #131f38;
+  --border-color: #1e2e4a;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --primary: #38bdf8;
+  --accent: #818cf8;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --code-bg: #040711;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg-space);
+  color: var(--text-main);
+  min-height: 100vh;
+}
+
+.mission-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Top Nav */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--panel-bg);
+  border-bottom: 1px solid var(--border-color);
+  padding: 14px 28px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-shield {
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  color: #060913;
+  font-weight: 900;
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.brand-text h1 {
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge-live {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid var(--success);
+  color: var(--success);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.brand-text p {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.metrics-ticker {
+  display: flex;
+  gap: 24px;
+}
+
+.ticker-item {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.ticker-lbl {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.ticker-val {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Fira Code', monospace;
+}
+
+.health-ok { color: var(--success); }
+.highlight { color: var(--primary); }
+
+/* Command Grid */
+.command-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 20px;
+  padding: 20px 28px;
+  flex-grow: 1;
+}
+
+.panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.panel-header h2, .panel-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.panel-tag {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: 'Fira Code', monospace;
+}
+
+/* Canvas & Graph */
+.canvas-wrapper {
+  background: var(--code-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#topology-canvas {
+  width: 100%;
+  max-height: 420px;
+}
+
+.graph-legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.graph-legend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.tier0 { background: #ef4444; }
+.tier1 { background: #38bdf8; }
+.tier2 { background: #818cf8; }
+.health-outage { background: #f59e0b; }
+
+/* Chaos Injection Box */
+.chaos-box {
+  margin-top: 18px;
+}
+
+.chaos-box h3 {
+  font-size: 13px;
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+
+.scenario-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-scenario {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 10px;
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.btn-scenario strong {
+  font-size: 12px;
+}
+
+.btn-scenario small {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.btn-scenario:hover {
+  border-color: var(--primary);
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.btn-scenario.p0:hover { border-color: var(--danger); }
+.btn-scenario.p1:hover { border-color: var(--warning); }
+.btn-scenario.sec:hover { border-color: var(--accent); }
+
+/* HITL Banner */
+.hitl-banner {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid var(--warning);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 18px;
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+
+.hitl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.badge-hitl {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--warning);
+}
+
+.risk-tag {
+  font-size: 10px;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.hitl-commands {
+  background: var(--code-bg);
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 6px;
+  margin: 10px 0;
+  font-size: 11.5px;
+}
+
+.hitl-commands pre {
+  margin-top: 6px;
+  color: #38bdf8;
+  font-family: 'Fira Code', monospace;
+  white-space: pre-wrap;
+}
+
+.hitl-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-approve {
+  background: var(--success);
+  color: #060913;
+}
+
+.btn-approve:hover { background: #059669; }
+
+.btn-reject {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+.btn-reject:hover { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+/* Timeline */
+.timeline-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-container h3 {
+  font-size: 13px;
+  margin-bottom: 12px;
+  color: var(--text-muted);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.timeline-empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border: 1px dashed var(--border-color);
+}
+
+.timeline-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+.timeline-card.triage { border-left-color: var(--danger); }
+.timeline-card.rca { border-left-color: var(--warning); }
+.timeline-card.security { border-left-color: var(--accent); }
+.timeline-card.remediation { border-left-color: var(--primary); }
+.timeline-card.postmortem { border-left-color: var(--success); }
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+
+.agent-name {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.agent-time {
+  color: var(--text-muted);
+  font-family: 'Fira Code', monospace;
+}
+
+.card-summary {
+  font-size: 12.5px;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.card-meta {
+  background: var(--code-bg);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-family: 'Fira Code', monospace;
+  color: #94a3b8;
+  white-space: pre-wrap;
+}
+
+/* Post-Mortem */
+.postmortem-box {
+  margin-top: 18px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.postmortem-view {
+  background: var(--code-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 16px;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  max-height: 280px;
+  overflow-y: auto;
+  color: #cbd5e1;
+}

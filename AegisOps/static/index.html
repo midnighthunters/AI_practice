@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AegisOps: Autonomous SRE & Incident Commander Mission Control</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="mission-layout">
+    <!-- Top Command Bar -->
+    <header class="top-nav">
+      <div class="brand">
+        <span class="brand-shield">AEGIS</span>
+        <div class="brand-text">
+          <h1>AegisOps <span class="badge-live">LIVE COMMAND</span></h1>
+          <p>Autonomous Multi-Agent SRE & Threat Remediation Platform</p>
+        </div>
+      </div>
+
+      <div class="metrics-ticker">
+        <div class="ticker-item">
+          <span class="ticker-lbl">CLUSTER HEALTH</span>
+          <span id="cluster-health-val" class="ticker-val health-ok">99.98% OPTIMAL</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-lbl">ACTIVE INCIDENTS</span>
+          <span id="active-inc-count" class="ticker-val">0</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-lbl">AUTONOMOUS MTTR</span>
+          <span class="ticker-val highlight">28.5 SECONDS</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <div class="command-grid">
+      <!-- Left Column: Microservice Topology Graph & Chaos Injection -->
+      <section class="panel panel-left">
+        <div class="panel-header">
+          <h2>🕸️ Live Microservice Topology & Blast Radius</h2>
+          <span class="panel-tag">GraphRAG Engine</span>
+        </div>
+
+        <div class="canvas-wrapper">
+          <canvas id="topology-canvas" width="620" height="420"></canvas>
+          <div class="graph-legend">
+            <span><i class="dot tier0"></i> Tier-0 Core</span>
+            <span><i class="dot tier1"></i> Tier-1 Business</span>
+            <span><i class="dot tier2"></i> Tier-2 Async</span>
+            <span><i class="dot health-outage"></i> Outage / Blast</span>
+          </div>
+        </div>
+
+        <div class="chaos-box">
+          <h3>⚡ Simulated Chaos Engineering Scenarios</h3>
+          <div class="scenario-buttons">
+            <button class="btn-scenario p0" id="btn-scen-1">
+              <strong>Scenario 1 (P0): DB Lock Exhaustion</strong>
+              <small>Deadlocks on PostgreSQL connection pool (500/500)</small>
+            </button>
+            <button class="btn-scenario p1" id="btn-scen-2">
+              <strong>Scenario 2 (P1): Redis OOM Cascade</strong>
+              <small>Session cache memory maxed out causing timeouts</small>
+            </button>
+            <button class="btn-scenario sec" id="btn-scen-3">
+              <strong>Scenario 3 (Sec): Malicious Attack</strong>
+              <small>Destructive injection attempt blocked at firewall</small>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Multi-Agent Swarm Timeline & HITL Gateway -->
+      <section class="panel panel-right">
+        <div class="panel-header">
+          <h2>🤖 Multi-Agent Incident Swarm & HITL Gateway</h2>
+          <span class="panel-tag" id="current-incident-tag">AWAITING TRIGGER</span>
+        </div>
+
+        <!-- HITL Approval Gateway Banner (when an action requires approval) -->
+        <div id="hitl-banner" class="hitl-banner" style="display:none;">
+          <div class="hitl-header">
+            <span class="badge-hitl">🛑 HUMAN-IN-THE-LOOP APPROVAL REQUIRED</span>
+            <span id="hitl-risk-tag" class="risk-tag">RISK: MEDIUM</span>
+          </div>
+          <p id="hitl-action-title">Proposed Action: Terminate Deadlocked Transactions & Reset Pool</p>
+          <div class="hitl-commands">
+            <code>Commands to execute via MCP:</code>
+            <pre id="hitl-code-preview"></pre>
+          </div>
+          <div class="hitl-actions">
+            <button id="btn-hitl-approve" class="btn btn-approve">✅ Authorize & Execute Remediation</button>
+            <button id="btn-hitl-reject" class="btn btn-reject">❌ Reject Action</button>
+          </div>
+        </div>
+
+        <!-- Agent Trace Timeline -->
+        <div class="timeline-container">
+          <h3>Autonomous Agent Reasoning Stream</h3>
+          <div id="agent-timeline" class="timeline">
+            <div class="timeline-empty">System standby. Trigger a scenario to watch the 5 agents coordinate in real time.</div>
+          </div>
+        </div>
+
+        <!-- Post-Mortem Tab / Section -->
+        <div id="postmortem-box" class="postmortem-box" style="display:none;">
+          <div class="panel-header">
+            <h3>📑 Executive 5-Whys Post-Mortem Report</h3>
+            <button id="btn-download-postmortem" class="btn btn-secondary">Copy Report Markdown</button>
+          </div>
+          <div id="postmortem-content" class="postmortem-view"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
