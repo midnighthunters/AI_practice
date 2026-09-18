@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Context Protocol (MCP) Studio & Inspector</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="logo-badge">MCP</span>
+        <h2>Model Context Protocol</h2>
+      </div>
+      <p class="subtitle">Universal Open Protocol for LLM Tools & Data</p>
+
+      <nav class="nav-tabs">
+        <button class="nav-btn active" data-tab="handshake">🤝 Protocol Handshake</button>
+        <button class="nav-btn" data-tab="tools">🔧 Tools & Execution</button>
+        <button class="nav-btn" data-tab="resources">📂 Context Resources</button>
+        <button class="nav-btn" data-tab="prompts">📜 Prompt Recipes</button>
+        <button class="nav-btn" data-tab="agent">🤖 Autonomous MCP Agent</button>
+      </nav>
+
+      <div class="server-status-card">
+        <div class="status-indicator online"></div>
+        <div>
+          <div class="server-name">MCP Server: Active</div>
+          <div class="server-ver">Spec: 2024-11-05 (JSON-RPC 2.0)</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Tab 1: Handshake -->
+      <section id="tab-handshake" class="tab-pane active">
+        <div class="header-box">
+          <h1>🤝 Protocol Handshake & Capabilities</h1>
+          <p>Inspect how MCP clients initiate sessions, negotiate capabilities (tools, resources, prompts), and exchange JSON-RPC 2.0 frames.</p>
+        </div>
+
+        <div class="action-row">
+          <button id="btn-run-handshake" class="btn primary-btn">Execute MCP Initialize Handshake</button>
+        </div>
+
+        <div class="grid-two">
+          <div class="card">
+            <h3>📤 Client Request (initialize)</h3>
+            <pre><code id="code-init-req">// Click 'Execute MCP Initialize Handshake' to inspect raw frame</code></pre>
+          </div>
+          <div class="card">
+            <h3>📥 Server Response (capabilities)</h3>
+            <pre><code id="code-init-resp">// Awaiting server response frame...</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 2: Tools -->
+      <section id="tab-tools" class="tab-pane">
+        <div class="header-box">
+          <h1>🔧 MCP Tools & Schema Validation</h1>
+          <p>Tools in MCP allow LLMs to invoke actions with strict JSON Schema verification.</p>
+        </div>
+
+        <div class="grid-two">
+          <div class="card">
+            <h3>Available Tools (tools/list)</h3>
+            <div id="tools-list" class="item-list">Loading tools...</div>
+          </div>
+          <div class="card">
+            <h3 id="tool-exec-title">Execute Tool (tools/call)</h3>
+            <div id="tool-form">Select a tool on the left to test arguments</div>
+            <button id="btn-call-tool" class="btn primary-btn mt-3" style="display:none;">Invoke Tool via MCP</button>
+            <h4 class="mt-4">JSON-RPC Result:</h4>
+            <pre><code id="code-tool-result">// Tool output will appear here...</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 3: Resources -->
+      <section id="tab-resources" class="tab-pane">
+        <div class="header-box">
+          <h1>📂 MCP Resources (Context Attachments)</h1>
+          <p>Resources represent read-only context attachments (telemetry, documents, configs) mapped to unique URIs.</p>
+        </div>
+
+        <div class="grid-two">
+          <div class="card">
+            <h3>Registered URIs (resources/list)</h3>
+            <div id="resources-list" class="item-list">Loading resources...</div>
+          </div>
+          <div class="card">
+            <h3>Resource Content (resources/read)</h3>
+            <div id="resource-viewer" class="code-box">Select a resource to read its live content.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 4: Prompts -->
+      <section id="tab-prompts" class="tab-pane">
+        <div class="header-box">
+          <h1>📜 Parameterized Prompt Templates</h1>
+          <p>Prompts in MCP are reusable server-defined recipes with dynamic parameters ready for LLM consumption.</p>
+        </div>
+
+        <div class="grid-two">
+          <div class="card">
+            <h3>Prompt Recipes (prompts/list)</h3>
+            <div id="prompts-list" class="item-list">Loading prompt templates...</div>
+          </div>
+          <div class="card">
+            <h3>Rendered Prompt (prompts/get)</h3>
+            <div id="prompt-renderer" class="code-box">Select a prompt template on the left.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 5: Agent -->
+      <section id="tab-agent" class="tab-pane">
+        <div class="header-box">
+          <h1>🤖 Autonomous MCP Agent</h1>
+          <p>Watch an AI Agent discover MCP tools dynamically, select appropriate tools for user questions, and synthesize answers.</p>
+        </div>
+
+        <div class="card mb-4">
+          <div class="input-group">
+            <input type="text" id="agent-query-input" placeholder="e.g., What will $50,000 grow to at 8% annual return over 6 years?" value="What will $25,000 grow to at 9.2% return over 4 years?">
+            <button id="btn-agent-run" class="btn primary-btn">Ask MCP Agent</button>
+          </div>
+          <div class="sample-queries">
+            <span>Try sample:</span>
+            <button class="chip" data-q="What will $25,000 grow to at 9.2% return over 4 years?">Compound Interest</button>
+            <button class="chip" data-q="Perform an immediate health diagnostic on server quantum-db-01.">Server Diagnostics</button>
+          </div>
+        </div>
+
+        <div id="agent-results" class="card" style="display:none;">
+          <h3>Agent Execution Trace</h3>
+          <div class="trace-step">
+            <div class="step-badge">1</div>
+            <div>
+              <strong>Discovered Tool Selected:</strong> <span id="agent-tool-name" class="highlight"></span>
+              <pre><code id="agent-tool-args"></code></pre>
+            </div>
+          </div>
+          <div class="trace-step">
+            <div class="step-badge">2</div>
+            <div>
+              <strong>MCP tools/call Output:</strong>
+              <pre><code id="agent-tool-output"></code></pre>
+            </div>
+          </div>
+          <div class="trace-step">
+            <div class="step-badge">3</div>
+            <div>
+              <strong>Synthesized Agent Answer:</strong>
+              <div id="agent-final-text" class="final-answer-box"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
