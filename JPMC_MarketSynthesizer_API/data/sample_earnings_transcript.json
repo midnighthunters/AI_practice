@@ -1,0 +1,25 @@
+{
+  "ticker": "JPM",
+  "quarter": "Q4 2023",
+  "transcript_text": "Good morning and thank you for joining our fourth-quarter earnings conference call. We reported net income of $9.3 billion or $3.04 per share, or $3.97 excluding FDIC assessment charges. For the full year, net income reached a record $49.6 billion with ROCE of 17%. We expect full-year 2024 Net Interest Income to remain robust around $90 billion, supported by sustained client deposit retention. On expenses, we anticipate 2024 adjusted noninterest expense of approximately $90 billion as we continue heavy capital expenditure investments into our cloud data architecture, cyber defense, and AI engineering capabilities. We remain optimistic on macroeconomic tailwinds and deal pipeline velocity in our investment bank, though we remain cautious regarding elevated geopolitical uncertainty and regulatory pressure.",
+  "consensus": [
+    {
+      "metric_name": "Adjusted EPS",
+      "reported_value": 3.97,
+      "consensus_estimate": 3.65,
+      "unit": "$"
+    },
+    {
+      "metric_name": "Net Revenue ($B)",
+      "reported_value": 39.9,
+      "consensus_estimate": 39.7,
+      "unit": "$B"
+    },
+    {
+      "metric_name": "Investment Banking Fees ($B)",
+      "reported_value": 1.8,
+      "consensus_estimate": 1.7,
+      "unit": "$B"
+    }
+  ]
+}
