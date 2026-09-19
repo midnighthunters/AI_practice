@@ -1,0 +1,53 @@
+{
+  "ticker": "JPM",
+  "fiscal_year": 2023,
+  "filing_type": "10-K",
+  "company_name": "JPMorgan Chase & Co.",
+  "tables": [
+    {
+      "title": "Consolidated Statements of Income",
+      "headers": ["Line Item", "2023 ($M)", "2022 ($M)", "2021 ($M)"],
+      "rows": [
+        ["Investment banking fees", "$7,030", "$6,870", "$13,215"],
+        ["Principal transactions", "$8,450", "$6,980", "$5,230"],
+        ["Lending- and deposit-related fees", "$7,210", "$6,810", "$6,740"],
+        ["Asset management fees", "$19,350", "$18,500", "$21,040"],
+        ["Total Net Revenue", "$158,104", "$128,695", "$121,649"],
+        ["Provision for credit losses", "$9,289", "$6,389", "($1,256)"],
+        ["Compensation expense", "$44,560", "$41,630", "$38,400"],
+        ["Occupancy and equipment expense", "$8,320", "$7,910", "$7,450"],
+        ["Technology and communications", "$11,200", "$9,800", "$8,900"],
+        ["Total Noninterest Expense", "$85,719", "$76,115", "$71,343"],
+        ["Income before income tax expense", "$63,096", "$46,191", "$51,562"],
+        ["Income tax expense", "$13,542", "$8,517", "$3,228"],
+        ["Net Income", "$49,554", "$37,674", "$48,334"]
+      ],
+      "footnotes": [
+        "Note 1: Net Revenue includes Net Interest Income of $89,267M in 2023.",
+        "Note 2: 2023 includes results of First Republic Bank acquisition from May 1, 2023."
+      ]
+    },
+    {
+      "title": "Consolidated Balance Sheets",
+      "headers": ["Line Item", "2023 ($M)", "2022 ($M)"],
+      "rows": [
+        ["Cash and due from banks", "$25,820", "$27,515"],
+        ["Deposits with banks", "$512,450", "$540,120"],
+        ["Investment securities", "$615,200", "$632,500"],
+        ["Loans, net of allowance", "$1,324,100", "$1,135,200"],
+        ["Accrued interest and other assets", "$1,397,823", "$1,330,735"],
+        ["Total Assets", "$3,875,393", "$3,666,070"],
+        ["Deposits", "$2,400,690", "$2,340,180"],
+        ["Short-term borrowings", "$120,450", "$110,320"],
+        ["Long-term debt", "$325,480", "$310,250"],
+        ["Other liabilities", "$700,488", "$613,010"],
+        ["Total Liabilities", "$3,547,108", "$3,373,760"],
+        ["Total Stockholders' Equity", "$328,285", "$292,310"]
+      ],
+      "footnotes": [
+        "Note 3: Total Liabilities ($3,547,108M) + Total Stockholders' Equity ($328,285M) = Total Liabilities & Equity ($3,875,393M)."
+      ]
+    }
+  ],
+  "raw_text": "JPMorgan Chase & Co. delivered record financial performance in 2023, reflecting net income of $49.6 billion and total net revenue of $158.1 billion, driven by the acquisition of First Republic Bank and robust net interest income expansion."
+}
