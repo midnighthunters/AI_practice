@@ -1,0 +1,40 @@
+{
+  "alert_id": "AML-ALERT-2023-9941",
+  "subject_entity": "Apex Global Trading Ltd",
+  "risk_score": 89.2,
+  "transactions": [
+    {
+      "transaction_id": "TX-90121",
+      "timestamp": "2023-11-04T09:12:00Z",
+      "originating_account": "GB82WEST12345698765432",
+      "originator_name": "Apex Global Trading Ltd",
+      "destination_account": "CH9300762011623852957",
+      "destination_country": "CH",
+      "amount": 9850.0,
+      "currency": "GBP",
+      "narrative": "Advisory retainer tranche 1"
+    },
+    {
+      "transaction_id": "TX-90122",
+      "timestamp": "2023-11-04T11:45:00Z",
+      "originating_account": "GB82WEST12345698765432",
+      "originator_name": "Apex Global Trading Ltd",
+      "destination_account": "CH9300762011623852957",
+      "destination_country": "CH",
+      "amount": 9920.0,
+      "currency": "GBP",
+      "narrative": "Advisory retainer tranche 2"
+    },
+    {
+      "transaction_id": "TX-90123",
+      "timestamp": "2023-11-04T15:20:00Z",
+      "originating_account": "GB82WEST12345698765432",
+      "originator_name": "Apex Global Trading Ltd",
+      "destination_account": "CY120020012800000012045",
+      "destination_country": "CY",
+      "amount": 9780.0,
+      "currency": "GBP",
+      "narrative": "Consulting software license tranche 3"
+    }
+  ]
+}
